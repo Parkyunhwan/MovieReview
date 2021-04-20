@@ -2,6 +2,9 @@ package org.yunhwan.moviereview.repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.yunhwan.moviereview.entity.Member;
 import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.entity.Review;
 
@@ -18,4 +21,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
      */
     @EntityGraph(attributePaths = {"member"}, type = EntityGraph.EntityGraphType.FETCH)
     List<Review> findByMovie(Movie movie);
+
+    // void deleteByMember(Member member); ------> 삭제 성능을 좀 더 개선하기 위해 @Query 사용.
+
+    @Modifying // update나 delete 시에는 @Modifying 어노테이션이 필요하다.
+    @Query("delete from Review mr where mr.member = :member") // -> 멤버의 모든 댓글을 한 쿼리로 삭제! (효율적)
+    void deleteByMember(Member member);
 }

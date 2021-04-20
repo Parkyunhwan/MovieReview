@@ -4,6 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 import org.yunhwan.moviereview.entity.Member;
 import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.entity.Review;
@@ -18,6 +20,9 @@ class ReviewRepositoryTest {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     public void insertReviews() throws Exception {
@@ -64,5 +69,31 @@ class ReviewRepositoryTest {
             System.out.print("\t" + movieReview.getMember().getEmail());
             System.out.println("------------END-----------------------");
         });
+    }
+
+    // 1. FK 쪽을 먼저 삭제하고 PK쪽을 삭제해야만 한다. 2. 두 가지 삭제 행동은 한번에 수행되어야만 하기 때문에 @Transactional과 @Commit을 넣어준다.
+    @Test
+    public void 회원의_모든_댓글삭제_후_회원삭제_실패테스트() throws Exception {
+        //given
+        Long mid = 1L;
+        //when
+        Member member = Member.builder().mid(mid).build();
+        memberRepository.deleteById(mid);
+        reviewRepository.deleteByMember(member);
+        //then
+    }
+
+    @Commit
+    @Transactional
+    @Test
+    public void 회원의_모든_댓글삭제_후_회원삭제_성공테스트() throws Exception {
+        //given
+        Long mid = 1L;
+        //when
+        Member member = Member.builder().mid(mid).build();
+
+        reviewRepository.deleteByMember(member);
+        memberRepository.deleteById(mid);
+        //then
     }
 }
