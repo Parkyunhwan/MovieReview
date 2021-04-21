@@ -16,6 +16,7 @@ public class UploadResultDTO {
     private String folderPath;
 
     // 파일이름 uuid 경로를 합쳐서 이미지 전체 경로 반환
+    // ajax 실행 시 아래 메서드가 실행되면서 ImageURL값을 만들어 가져감.
     public String getImageURL() {
         try {
             return URLEncoder.encode(folderPath + "/" + uuid + "_" + fileName, "UTF-8");

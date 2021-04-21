@@ -3,8 +3,11 @@ package org.yunhwan.moviereview.controller;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +15,9 @@ import org.yunhwan.moviereview.dto.UploadResultDTO;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -26,6 +32,42 @@ public class UploadController {
 
     @Value("${org.yunhwan.upload.path}")
     private String uploadPath;
+
+    /**
+     * 인코딩된 파일이름을 파라미터로 받아서
+     * 이름에 해당하는 파일을 byte[]
+     *
+     * 파일의 확장자에 따라 Content-Type이 변경되므로 -> probeContentType사용
+     * 파일 데이터 처리 -> FileCopyUtils.copyToByteArray() (스프링 제공)
+     * @param fileName
+     * @return
+     */
+    @GetMapping("/display")
+    public ResponseEntity<byte[]> getFile(String fileName) {
+        ResponseEntity<byte[]> result = null;
+
+        try {
+            String srcFileName = URLDecoder.decode(fileName, "UTF-8");
+
+            log.info("fileName: " + srcFileName);
+
+            File file = new File(uploadPath + File.separator + srcFileName);
+
+            log.info("file: " + file);
+
+            HttpHeaders header = new HttpHeaders();
+
+            //MIME 타입 처리
+            header.add("Content-Type", Files.probeContentType(file.toPath()));
+            log.info("header: " + header);
+            // 파일 데이터 처리
+            result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
+    }
 
     /**
      * 멀티파트 파일을 받아와서 각각의 파일을 폴더에 저장하는 기능
@@ -69,7 +111,8 @@ public class UploadController {
                     uuid + "_" + originalName;
 
             Path savePath = Paths.get(saveName);
-
+            UploadResultDTO aa = new UploadResultDTO(originalName, uuid, folderPath);
+            log.info("get dto : " + aa);
             try {
                 uploadFile.transferTo(savePath);
                 resultDTOList.add(new UploadResultDTO(originalName, uuid, folderPath));
