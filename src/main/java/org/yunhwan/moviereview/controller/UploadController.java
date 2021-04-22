@@ -1,6 +1,7 @@
 package org.yunhwan.moviereview.controller;
 
 import lombok.extern.log4j.Log4j2;
+import net.coobird.thumbnailator.Thumbnailator;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -115,6 +116,16 @@ public class UploadController {
             log.info("get dto : " + aa);
             try {
                 uploadFile.transferTo(savePath);
+
+                //썸네일 생성
+                // 썸네일 이름 지정 _s 추가함.
+                String thumbnailSaveName = uploadPath + File.separator + folderPath + File.separator
+                        + "s_" + uuid + "_" + originalName;
+                File thumbnailFile = new File(thumbnailSaveName);
+
+                // 썸네일 생성
+                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100, 100);
+
                 resultDTOList.add(new UploadResultDTO(originalName, uuid, folderPath));
             } catch (IOException e) {
                 e.printStackTrace();

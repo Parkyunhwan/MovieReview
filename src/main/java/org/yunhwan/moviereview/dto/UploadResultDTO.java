@@ -25,4 +25,17 @@ public class UploadResultDTO {
         }
         return "";
     }
+
+    /**
+     * json으로 전달되는 UploadResultDTO에 썸네일 링크를 처리하기 위한 함수
+     * @return
+     */
+    public String getThumbnailURL() {
+        try {
+            return URLEncoder.encode(folderPath + "/s_" + uuid + "_" + fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }
