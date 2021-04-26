@@ -3,6 +3,7 @@ package org.yunhwan.moviereview.service;
 
 import org.yunhwan.moviereview.dto.ReviewDTO;
 import org.yunhwan.moviereview.entity.Member;
+import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.entity.Review;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public interface ReviewService {
                 .text(reviewDTO.getText())
                 .grade(reviewDTO.getGrade())
                 .member(Member.builder().mid(reviewDTO.getMid()).build())
+                .movie(Movie.builder().mno(reviewDTO.getMno()).build())
                 .grade(reviewDTO.getGrade())
                 .text(reviewDTO.getText())
                 .build();
