@@ -26,4 +26,13 @@ public class Review extends BaseEntity {
 
     private int grade;
     private String text;
+
+    // 수정을 위한 메서드 (set로 메서드 이름 정하는 것보단 의미있는 이름을 지어봄)
+    public void changeGrade(int grade) {
+        this.grade = grade;
+    }
+
+    public void changeText(String text) {
+        this.text = text;
+    }
 }
