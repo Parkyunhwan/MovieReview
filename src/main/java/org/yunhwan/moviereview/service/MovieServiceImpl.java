@@ -16,6 +16,7 @@ import org.yunhwan.moviereview.repository.MovieImageRepositroy;
 import org.yunhwan.moviereview.repository.MovieRepository;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -72,5 +73,25 @@ public class MovieServiceImpl implements MovieService{
 
         // 데이터 + 적용할 함수.
         return new PageResultDTO<>(result, fn);
+    }
+
+    @Override
+    public MovieDTO getMovie(Long mno) {
+        List<Object[]> movieWithAll = movieRepository.getMovieWithAll(mno);
+
+        Movie movie = (Movie) movieWithAll.get(0)[0]; // 어차피 다 똑같은 Movie row
+
+        List<MovieImage> movieImageList = new ArrayList<>();
+
+        movieWithAll.forEach(arr ->{
+            MovieImage movieImage = (MovieImage) arr[1];
+            movieImageList.add(movieImage);
+        });
+
+        Double avg = (Double) movieWithAll.get(0)[2];
+        Long reviewCnt = (Long) movieWithAll.get(0)[3]; // 모든 Row가 같으므로 0번째 ROw에서 뽑으면 됨.
+
+        return entitiesToDTO(movie, movieImageList, avg, reviewCnt); // 여러 엔티티
+
     }
 }
