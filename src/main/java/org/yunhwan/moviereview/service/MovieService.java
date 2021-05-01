@@ -32,6 +32,10 @@ public interface MovieService {
         MovieDTO movieDTO = MovieDTO.builder()
                 .mno(movie.getMno())
                 .title(movie.getTitle())
+                .runningTime(movie.getRunningTime())
+                .rating(movie.getRating())
+                .openDate(movie.getOpenDate())
+                .country(movie.getCountry())
                 .regDate(movie.getRegDate())
                 .modDate(movie.getRegDate())
                 .build();
@@ -55,7 +59,7 @@ public interface MovieService {
     }
 
     /**
-     * Movie객체와 MovieImage객체가 함께 처리되므로 Map타입으로 두 객체를 반환해야한다.
+     * Movie객체와 MovieImage객체가 함께 처리되므로 Map타입으로 두 객체를 반환
      * @param movieDTO
      * @return
      */
@@ -66,6 +70,10 @@ public interface MovieService {
         Movie movie = Movie.builder()
                 .mno(movieDTO.getMno())
                 .title(movieDTO.getTitle())
+                .country(movieDTO.getCountry())
+                .openDate(movieDTO.getOpenDate())
+                .runningTime(movieDTO.getRunningTime())
+                .rating(movieDTO.getRating())
                 .build();
 
         entityMap.put("movie", movie);

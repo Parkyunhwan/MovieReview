@@ -92,6 +92,5 @@ public class MovieServiceImpl implements MovieService{
         Long reviewCnt = (Long) movieWithAll.get(0)[3]; // 모든 Row가 같으므로 0번째 ROw에서 뽑으면 됨.
 
         return entitiesToDTO(movie, movieImageList, avg, reviewCnt); // 여러 엔티티
-
     }
 }

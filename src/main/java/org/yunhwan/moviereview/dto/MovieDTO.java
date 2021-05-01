@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,4 +35,13 @@ public class MovieDTO {
     private LocalDateTime regDate;
 
     private LocalDateTime modDate;
+
+    private LocalDateTime openDate;
+
+    private String rating;
+
+    @DateTimeFormat(pattern = "yyyyMMdd")
+    private Long runningTime;
+
+    private String country;
 }

@@ -5,10 +5,10 @@
 
     <th:block th:fragment="content">
 
-        <h1 class="mt-4">Movie List Page
-            <span>
+        <h1 class="mt-4 text-danger">영화 목록
+            <span class="m-5">
                 <a th:href="@{/movie/register}">
-                    <button type="button" class="btn btn-outline-primary">REGISTER
+                    <button type="button" class="btn btn-outline-primary">새로운 영화 등록
                     </button>
                 </a>
             </span>
@@ -22,9 +22,10 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">영화 제목 & 썸네일</th>
+                <th scope="col">사진 & 영화 제목 </th>
                 <th scope="col">리뷰 개수</th>
                 <th scope="col">평균 평점</th>
+                <th scope="col">등급</th>
                 <th scope="col">등록일</th>
             </tr>
             </tbody>
@@ -38,11 +39,12 @@
                 </th>
 
 <!--                값이 있는지 검사 먼저 진행 후 -> 사진 꺼내오기 -->
-                <td><img th:if="${dto.imageDTOList.size() > 0 && dto.imageDTOList[0].path != null}"
-                         th:src="|/display?fileName=${dto.imageDTOList[0].getThumbnailURL()}|" >[[${dto.title}]]
+                <td><a th:href="@{/movie/read(mno = ${dto.mno}, page=${result.page})}"><img class="img-thumbnail thumb" th:if="${dto.imageDTOList.size() > 0 && dto.imageDTOList[0].path != null}"
+                         th:src="|/display?fileName=${dto.imageDTOList[0].getThumbnailURL()}|"></a>[[${dto.title}]]
                 </td>
-                <td><b>[[${dto.reviewCnt}]]</b></td>
-                <td><b>[[${dto.avg}]]</b></td>
+                <td><span class="badge badge-dark"><b>[[${dto.reviewCnt}]]</b></span></td>
+                <td><span class="badge badge-secondary text-warning"><b>[[${dto.avg}]]</b></span></td>
+                <td><span class="badge badge-light text-danger"><b>[[${dto.rating}]]</b></span></td>
                 <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
             </tr>
             </thead>

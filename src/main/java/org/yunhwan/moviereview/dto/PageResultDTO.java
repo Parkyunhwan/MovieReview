@@ -37,6 +37,7 @@ public class PageResultDTO<DTO, EN> {
     // 생성자..
     public PageResultDTO(Page<EN> result, Function<EN,DTO> fn ){
 
+        // 각각의 엔티티에 대해 넘어온 함수를 적용해서 실행 (DB조회한 값을 dto에 맞게 변환하도록함)
         dtoList = result.stream().map(fn).collect(Collectors.toList());
 
         totalPage = result.getTotalPages();
