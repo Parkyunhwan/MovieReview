@@ -1,5 +1,6 @@
 package org.yunhwan.moviereview.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,11 +37,11 @@ public class MovieDTO {
 
     private LocalDateTime modDate;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime openDate;
 
     private String rating;
 
-    @DateTimeFormat(pattern = "yyyyMMdd")
     private Long runningTime;
 
     private String country;
