@@ -16,10 +16,7 @@ import org.yunhwan.moviereview.repository.MovieImageRepositroy;
 import org.yunhwan.moviereview.repository.MovieRepository;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -42,15 +39,15 @@ public class MovieServiceImpl implements MovieService{
         Map<String, Object> entityMap = dtoToEntity(movieDTO);
         Movie movie = (Movie) entityMap.get("movie");
 
-        List<MovieImage> movieImageList = (List<MovieImage>) entityMap.get("imgList");
-
         //영화 등록
         movieRepository.save(movie);
 
-        movieImageList.forEach(movieImage -> {
-            movieImageRepositroy.save(movieImage);
-        });
-
+        if (entityMap.containsKey("imgList")) {
+            List<MovieImage> movieImageList = (List<MovieImage>) entityMap.get("imgList");
+            movieImageList.forEach(movieImage -> {
+                movieImageRepositroy.save(movieImage);
+            });
+        }
         return movie.getMno();
     }
 
@@ -64,12 +61,22 @@ public class MovieServiceImpl implements MovieService{
         Page<Object[]> result = movieRepository.getListPage(pageable);
 
         // <파라미터, 리턴값>
-        Function<Object[], MovieDTO> fn = (arr -> entitiesToDTO(
-                (Movie)arr[0],
-                (List<MovieImage>)(Arrays.asList((MovieImage)arr[1])),
-                (Double) arr[2],
-                (Long) arr[3]
-        ));
+        Function<Object[], MovieDTO> fn = (arr -> {
+            if (arr[1] != null) {
+                return entitiesToDTO(
+                        (Movie) arr[0],
+                        (List<MovieImage>) (Arrays.asList((MovieImage) arr[1])),
+                        (Double) arr[2],
+                        (Long) arr[3]);
+            } else {
+                return entitiesToDTO(
+                        (Movie) arr[0],
+                        Collections.emptyList(),
+                        (Double) arr[2],
+                        (Long) arr[3]);
+            }
+        }
+        );
 
         // 데이터 + 적용할 함수.
         return new PageResultDTO<>(result, fn);
