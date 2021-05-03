@@ -11,6 +11,7 @@ import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.entity.Review;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +24,63 @@ class ReviewRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private MovieRepository movieRepository;
+
+
+    @Test
+    @Transactional
+    public void 특정영화관련리뷰삭제() throws Exception {
+        //given
+        Member mem = Member.builder()
+                .email("test@email.com")
+                .build();
+
+        Movie m = Movie.builder()
+                .title("TEST")
+                .build();
+
+        Review r = Review.builder()
+                .text("TEST REVIEW1")
+                .member(mem)
+                .movie(m)
+                .build();
+        Review r1 = Review.builder()
+                .text("TEST REVIEW2")
+                .member(mem)
+                .movie(m)
+                .build();
+        Review r2 = Review.builder()
+                .text("TEST REVIEW3")
+                .member(mem)
+                .movie(m)
+                .build();
+
+        memberRepository.save(mem);
+        movieRepository.save(m);
+        reviewRepository.save(r);
+        reviewRepository.save(r1);
+        reviewRepository.save(r2);
+        List<Review> byMovie = reviewRepository.findByMovie(m);
+        if (byMovie.isEmpty()) {
+            System.out.println("Empty List");
+        } else {
+            byMovie.forEach(review -> System.out.println(review));
+        }
+        //when
+
+        reviewRepository.deleteByMovie_Mno(m.getMno());
+        //then
+        List<Review> after = reviewRepository.findByMovie(m);
+        System.out.println(after);
+        if (after.isEmpty()) {
+            System.out.println("Empty List");
+        } else {
+            after.forEach(review -> System.out.println(review));
+        }
+        assertTrue(after.isEmpty());
+    }
 
     @Test
     public void insertReviews() throws Exception {

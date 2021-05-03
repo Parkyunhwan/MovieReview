@@ -27,6 +27,13 @@ public class MovieServiceImpl implements MovieService{
     private final MovieRepository movieRepository;
     private final MovieImageRepositroy movieImageRepositroy;
 
+    @Override
+    public void removeWithReplies(Long mno) {
+
+        // movie image 부터 삭제..
+        movieImageRepositroy.deleteByMovie_Mno(mno);
+    }
+
     /**
      * 영화와 영화관련 이미지를 저장 후 (영화 번호) 반환
      * @param movieDTO

@@ -27,4 +27,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Modifying // update나 delete 시에는 @Modifying 어노테이션이 필요하다.
     @Query("delete from Review mr where mr.member = :member") // -> 멤버의 모든 댓글을 한 쿼리로 삭제! (효율적)
     void deleteByMember(Member member);
+
+    void deleteByMovie_Mno(Long mno);
+
 }

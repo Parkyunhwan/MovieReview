@@ -22,6 +22,7 @@ public class MovieImage {
 
     private String path; // 폴더 구조
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Movie movie;
+
 }

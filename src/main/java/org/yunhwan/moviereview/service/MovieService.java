@@ -15,6 +15,9 @@ import java.util.stream.Collectors;
 
 public interface MovieService {
 
+    // 댓글과 함께 영화 삭제
+    void removeWithReplies(Long mno);
+
     Long register(MovieDTO movieDTO);
 
     PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO requestDTO);
@@ -41,16 +44,18 @@ public interface MovieService {
                 .modDate(movie.getRegDate())
                 .build();
 
-        if (movieImages.get(0) != null) {
-            // List<MovieImage>를 stream map을 통해 List<MovieImageDTO>로 변환..
-            List<MovieImageDTO> movieImageDTOList = movieImages.stream().map(movieImage -> {
-                return MovieImageDTO.builder()
-                        .path(movieImage.getPath())
-                        .uuid(movieImage.getUuid())
-                        .imgName(movieImage.getImgName())
-                        .build();
-            }).collect(Collectors.toList());
-            movieDTO.setImageDTOList(movieImageDTOList);
+        if (!movieImages.isEmpty()) {
+            if (movieImages.get(0) != null) {
+                // List<MovieImage>를 stream map을 통해 List<MovieImageDTO>로 변환..
+                List<MovieImageDTO> movieImageDTOList = movieImages.stream().map(movieImage -> {
+                    return MovieImageDTO.builder()
+                            .path(movieImage.getPath())
+                            .uuid(movieImage.getUuid())
+                            .imgName(movieImage.getImgName())
+                            .build();
+                }).collect(Collectors.toList());
+                movieDTO.setImageDTOList(movieImageDTOList);
+            }
         }
         // 화면 출력을 위해 DTO에 데이터를 넣어줌
         movieDTO.setAvg(avg);
