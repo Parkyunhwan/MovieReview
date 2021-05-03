@@ -30,4 +30,11 @@ public class Movie extends BaseEntity {
     private Long runningTime;
 
     private String country;
+
+    public void changeTitle(String title, LocalDate openDate, Long runningTime, String country) {
+        this.title = title;
+        this.openDate = openDate;
+        this.runningTime = runningTime;
+        this.country = country;
+    }
 }

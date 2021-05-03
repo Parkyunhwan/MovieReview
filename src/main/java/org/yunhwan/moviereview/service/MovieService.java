@@ -24,6 +24,8 @@ public interface MovieService {
 
     MovieDTO getMovie(Long mno);
 
+    void modify(MovieDTO movieDTO);
+
     /**
      * Movie, MovieImage 리스트, 평균, 리뷰갯수를 조회해서 DTO값에 넣어주는 작업.
      * @param movie

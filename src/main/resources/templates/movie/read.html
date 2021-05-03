@@ -42,6 +42,14 @@
             <label >리뷰 갯수 </label>
             <input type="text" class="form-control" name="reviewCnt" th:value="${dto.reviewCnt}" readonly>
         </div>
+        <!--  수정 과 목록 버튼       -->
+        <a th:href="@{/movie/modify(mno = ${dto.mno})}">
+            <button type="button" class="btn btn-primary">Modify</button>
+        </a>
+<!--        <a th:href="@{/board/list(page=${requestDTO.page} , type=${requestDTO.type}, keyword =${requestDTO.keyword})}">-->
+<!--            <button type="button" class="btn btn-info">List</button>-->
+<!--        </a>-->
+
 
         <style>
             .uploadResult {

@@ -14,6 +14,7 @@ import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.entity.MovieImage;
 import org.yunhwan.moviereview.repository.MovieImageRepositroy;
 import org.yunhwan.moviereview.repository.MovieRepository;
+import org.yunhwan.moviereview.repository.ReviewRepository;
 
 
 import java.util.*;
@@ -26,12 +27,16 @@ public class MovieServiceImpl implements MovieService{
 
     private final MovieRepository movieRepository;
     private final MovieImageRepositroy movieImageRepositroy;
-
+    private final ReviewRepository reviewRepository;
     @Override
     public void removeWithReplies(Long mno) {
 
-        // movie image 부터 삭제..
+        // review, movie image 부터 삭제..
+        reviewRepository.deleteByMovie_Mno(mno);
         movieImageRepositroy.deleteByMovie_Mno(mno);
+
+        // movie 삭제..
+        movieRepository.deleteById(mno);
     }
 
     /**
@@ -106,5 +111,14 @@ public class MovieServiceImpl implements MovieService{
         Long reviewCnt = (Long) movieWithAll.get(0)[3]; // 모든 Row가 같으므로 0번째 ROw에서 뽑으면 됨.
 
         return entitiesToDTO(movie, movieImageList, avg, reviewCnt); // 여러 엔티티
+    }
+
+    @Transactional
+    @Override
+    public void modify(MovieDTO movieDTO) {
+        Movie movie = movieRepository.getOne(movieDTO.getMno());
+        log.info(movieDTO);
+        movie.changeTitle(movieDTO.getTitle(), movieDTO.getOpenDate(), movieDTO.getRunningTime(), movieDTO.getCountry());
+        // 엔티티매니저가 "변경 감지" 하기 때문에 따로 save 쿼리 안날렷음.
     }
 }
