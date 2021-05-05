@@ -101,16 +101,21 @@
 
 
 
-            // 버튼 클릭시 uri가 remove로 바뀜.
-            // $(".removeBtn").click(function(){
-            //
-            //     actionForm
-            //         .attr("action", "/movie/" + mno)
-            //         .attr("method","remove");
-            //
-            //     actionForm.submit();
-            //
-            // });
+            //버튼 클릭시 uri가 remove로 바뀜.
+            $(".removeBtn").click(function(){
+
+                // w
+
+                $.ajax({
+                    url: "/movie/" + mno,
+                    dataType: 'application/json',
+                    type: 'DELETE',
+                    success: function (result) {
+                        alert("선택한 파일이 삭제되었습니다.");
+                    }
+                })
+
+            });
 
             $(".modifyBtn").click(function() {
                 var data = $("input[type='text']").serializeArray();
@@ -128,11 +133,8 @@
                 $.ajax({
                     url: "/movie/" + mno,
                     data: data,
-                    dataType: 'application/json',
-                    type: 'PUT',
-                    success: function (result) {
-                        alert("선택한 파일이 삭제되었습니다.");
-                    }
+                    dataType: 'application/json; charset=utf-8',
+                    type: 'PUT'
                 })
             });
 

@@ -38,7 +38,7 @@ public class MovieDTO {
 
     private LocalDateTime modDate;
 
-    @DateTimeFormat(pattern = "yyyyMMdd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate openDate;
 
     private String rating;

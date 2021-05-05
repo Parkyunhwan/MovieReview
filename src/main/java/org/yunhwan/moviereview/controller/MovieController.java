@@ -3,16 +3,22 @@ package org.yunhwan.moviereview.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.servlet.view.RedirectView;
 import org.yunhwan.moviereview.dto.MovieDTO;
 import org.yunhwan.moviereview.dto.PageRequestDTO;
 import org.yunhwan.moviereview.dto.PageResultDTO;
 import org.yunhwan.moviereview.service.MovieService;
+
+import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 
 @Controller
 @RequestMapping("/movie")
@@ -45,13 +51,26 @@ public class MovieController {
         model.addAttribute("result", list);
     }
 
-    @GetMapping({"/read", "/modify"})
-    public void read(long mno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
+    @GetMapping("/{mno}")
+    public String readMovie(@PathVariable long mno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
         log.info("mno: " + mno);
 
         MovieDTO movieDTO = movieService.getMovie(mno);
 
         model.addAttribute("dto", movieDTO);
+
+        return "/movie/read";
+    }
+
+    @GetMapping("/{mno}/modify")
+    public String modifyPage(@PathVariable long mno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
+        log.info("mno: " + mno);
+
+        MovieDTO movieDTO = movieService.getMovie(mno);
+
+        model.addAttribute("dto", movieDTO);
+
+        return "/movie/modify";
     }
 
     @DeleteMapping("/{mno}")
@@ -63,9 +82,12 @@ public class MovieController {
     }
 
     @PutMapping("/{mno}")
-    public ResponseEntity<String> modifyMovie(@PathVariable("mno") Long mno, MovieDTO movieDTO) {
+    public RedirectView modifyMovie(@PathVariable("mno") Long mno, MovieDTO movieDTO) {
         log.info("modify mno " + mno);
         movieService.modify(movieDTO);
-        return new ResponseEntity<>("modify Success", HttpStatus.OK);
+
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("/movie/" + mno);
+        return redirectView;
     }
 }

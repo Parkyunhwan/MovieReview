@@ -33,7 +33,7 @@
             <tr th:each="dto : ${result.dtoList}">
                 <th scope="row">
 <!--                    링크 연결-->
-                    <a th:href="@{/movie/read(mno = ${dto.mno}, page=${result.page})}">
+                    <a th:href="@{'/movie/' + ${dto.mno}}">
                         [[${dto.mno}]]
                     </a>
                 </th>
