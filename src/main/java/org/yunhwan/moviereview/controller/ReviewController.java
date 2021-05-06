@@ -34,6 +34,8 @@ public class ReviewController {
 
         Long regNum = reviewService.register(reviewDTO);
 
+        // PRG패턴을 컨트롤러 단에서 만들려 했으나 ajax 요청 시 응답 처리해줘야하므로 응답 처리에서 redirect처리 해줘야 함
+        //return "redirect:/movie/" + reviewDTO.getMno();
         return new ResponseEntity<>(regNum, HttpStatus.OK);
     }
 
