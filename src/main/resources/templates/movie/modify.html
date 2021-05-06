@@ -99,7 +99,9 @@
             //var actionForm = $("form"); //form 태그 객체
             var mno = $("input[id='mno']").val();
 
-
+            $(".listBtn").click(function(){
+                window.location = "/movie/list";
+            });
 
             //버튼 클릭시 uri가 remove로 바뀜.
             $(".removeBtn").click(function(){
@@ -108,10 +110,12 @@
 
                 $.ajax({
                     url: "/movie/" + mno,
-                    dataType: 'application/json',
                     type: 'DELETE',
+                    contentType:"application/json; charset=utf-8",
+                    dataType:"text",
                     success: function (result) {
                         alert("선택한 파일이 삭제되었습니다.");
+                        window.location = "/movie/list";
                     }
                 })
 
@@ -150,29 +154,6 @@
                     }
                 })
             });
-
-            //
-            // $(".listBtn").click(function() {
-            //
-            //     //var pageInfo = $("input[name='page']");
-            //     var page = $("input[name='page']");
-            //     var type = $("input[name='type']");
-            //     var keyword = $("input[name='keyword']");
-            //
-            //     actionForm.empty(); //form 태그의 모든 내용을 지우고
-            //
-            //     actionForm.append(page);
-            //     actionForm.append(type);
-            //     actionForm.append(keyword);
-            //
-            //
-            //     actionForm
-            //         .attr("action", "/board/list")
-            //         .attr("method","get");
-            //
-            //     actionForm.submit();
-            //
-            // })
 
         </script>
     </th:block>

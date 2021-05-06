@@ -28,12 +28,15 @@ public class MovieServiceImpl implements MovieService{
     private final MovieRepository movieRepository;
     private final MovieImageRepositroy movieImageRepositroy;
     private final ReviewRepository reviewRepository;
+
+    @Transactional
     @Override
     public void removeWithReplies(Long mno) {
 
         // review, movie image 부터 삭제..
-        reviewRepository.deleteByMovie_Mno(mno);
-        movieImageRepositroy.deleteByMovie_Mno(mno);
+        Movie movie = movieRepository.getOne(mno);
+        reviewRepository.deleteByMovie(movie);
+        movieImageRepositroy.deleteByMovie(movie);
 
         // movie 삭제..
         movieRepository.deleteById(mno);
