@@ -31,10 +31,11 @@ public class Movie extends BaseEntity {
 
     private String country;
 
-    public void changeTitle(String title, LocalDate openDate, Long runningTime, String country) {
+    public void changeTitle(String title, LocalDate openDate, Long runningTime, String country, String rating) {
         this.title = title;
         this.openDate = openDate;
         this.runningTime = runningTime;
         this.country = country;
+        this.rating = rating;
     }
 }

@@ -249,7 +249,7 @@
                 }
 
                 getMovieReviews();
-            });
+
 
             //리뷰 수정
 
@@ -262,6 +262,7 @@
 
 
                 var targetReview = $(this);
+
 
                 reviewnum = targetReview.data("reviewnum");
                 console.log("reviewnum: "+ reviewnum);
@@ -331,7 +332,7 @@
                 $(".imageModal").modal("show");
 
             });
-
+            });
         </script>
     </th:block>
 </th:block>

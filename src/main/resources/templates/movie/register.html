@@ -5,7 +5,7 @@
         <h1 class="mt-4">영화 등록 페이지</h1>
 
         <!-- submit실행 시 수행되는 form (data를 가지고 moive/register url에 POST 요청을 보내게 된다.       -->
-        <form th:action="@{/movie/register}" th:method="post">
+        <form th:action="@{/movie/}" th:method="post">
             <div class="form-group">
                 <label>영화 제목</label>
                 <input type="text" class="form-control" name="title" placeholder="영화 제목을 입력하세요.">

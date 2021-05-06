@@ -19,6 +19,7 @@ import org.yunhwan.moviereview.service.MovieService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 @Controller
 @RequestMapping("/movie")
@@ -33,7 +34,7 @@ public class MovieController {
 
     }
 
-    @PostMapping("/register")
+    @PostMapping("/")
     public String register(MovieDTO movieDTO, RedirectAttributes redirectAttributes) {
         log.info("movieDTO: " + movieDTO); // 넘어온 movieDTO
 
@@ -82,12 +83,11 @@ public class MovieController {
     }
 
     @PutMapping("/{mno}")
-    public RedirectView modifyMovie(@PathVariable("mno") Long mno, MovieDTO movieDTO) {
+    @ResponseBody
+    public ResponseEntity<String> modifyMovie(@PathVariable("mno") Long mno, @RequestBody MovieDTO movieDTO) {
         log.info("modify mno " + mno);
         movieService.modify(movieDTO);
 
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("/movie/" + mno);
-        return redirectView;
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 }

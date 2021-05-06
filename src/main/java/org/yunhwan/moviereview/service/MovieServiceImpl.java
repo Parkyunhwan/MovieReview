@@ -118,7 +118,8 @@ public class MovieServiceImpl implements MovieService{
     public void modify(MovieDTO movieDTO) {
         Movie movie = movieRepository.getOne(movieDTO.getMno());
         log.info(movieDTO);
-        movie.changeTitle(movieDTO.getTitle(), movieDTO.getOpenDate(), movieDTO.getRunningTime(), movieDTO.getCountry());
+        movie.changeTitle(movieDTO.getTitle(), movieDTO.getOpenDate(), movieDTO.getRunningTime()
+                , movieDTO.getCountry(), movieDTO.getRating());
         // 엔티티매니저가 "변경 감지" 하기 때문에 따로 save 쿼리 안날렷음.
     }
 }
