@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
@@ -45,5 +46,16 @@ class MovieRepositoryTest {
     @Test
     public void Movie와SearchBoardRepository간연결테스트() throws Exception {
         movieRepository.Search1();
+    }
+
+    @Test
+    public void SearchPage정상작동테스트() throws Exception {
+        //given
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending());
+
+        Page<Object[]> result = movieRepository.searchPage("trc", "영국", pageable);
+        //when
+
+        //then
     }
 }
