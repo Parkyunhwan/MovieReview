@@ -25,6 +25,9 @@ public class PageResultDTO<DTO, EN> {
     //목록 사이즈
     private int size;
 
+    private String type;
+    private String keyword;
+
     //시작 페이지 번호, 끝 페이지 번호
     private int start, end;
 

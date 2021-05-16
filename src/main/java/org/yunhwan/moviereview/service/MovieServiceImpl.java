@@ -73,7 +73,12 @@ public class MovieServiceImpl implements MovieService{
         Pageable pageable = requestDTO.getPageable(Sort.by("mno").descending());
 
         // 여러 엔티티가 섞여있는 데이터이므로 Object[]로 받도록 함.
-        Page<Object[]> result = movieRepository.getListPage(pageable);
+
+        //Page<Object[]> result = movieRepository.getListPage(pageable); -> no search logic
+
+        // Add search logic
+        Page<Object[]> result = movieRepository.searchPage(requestDTO.getType(), requestDTO.getKeyword(),
+                requestDTO.getPageable(Sort.by("mno").descending()));
 
         // <파라미터, 리턴값>
         Function<Object[], MovieDTO> fn = (arr -> {

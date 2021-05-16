@@ -12,11 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.yunhwan.moviereview.entity.Movie;
-import org.yunhwan.moviereview.entity.QMember;
-import org.yunhwan.moviereview.entity.QMovie;
-import org.yunhwan.moviereview.entity.QReview;
+import org.yunhwan.moviereview.entity.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,13 +53,14 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
 
         QMovie movie = QMovie.movie;
         QReview review = QReview.review;
-        QMember member = QMember.member;
+        QMovieImage movieImage = QMovieImage.movieImage;
 
         JPQLQuery<Movie> jpqlQuery = from(movie);
+        jpqlQuery.leftJoin(movieImage).on(movieImage.movie.eq(movie));
         jpqlQuery.leftJoin(review).on(review.movie.eq(movie));
-        jpqlQuery.leftJoin(member).on(review.member.eq(member));
 
-        JPQLQuery<Tuple> tuple = jpqlQuery.select(movie, review.grade.avg(), review.count());
+
+        JPQLQuery<Tuple> tuple = jpqlQuery.select(movie, movieImage, review.grade.avg().coalesce(0.0), review.count());
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         BooleanExpression expression = movie.mno.gt(0L);
