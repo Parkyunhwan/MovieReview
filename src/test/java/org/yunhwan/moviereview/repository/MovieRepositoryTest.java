@@ -41,4 +41,9 @@ class MovieRepositoryTest {
             System.out.println(Arrays.toString(arr));
         }
     }
+
+    @Test
+    public void Movie와SearchBoardRepository간연결테스트() throws Exception {
+        movieRepository.Search1();
+    }
 }

@@ -70,7 +70,7 @@ class ReviewRepositoryTest {
         }
         //when
 
-        reviewRepository.deleteByMovie_Mno(m.getMno());
+///        reviewRepository.deleteByMovie_Mno(m.getMno());
         //then
         List<Review> after = reviewRepository.findByMovie(m);
         System.out.println(after);

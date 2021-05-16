@@ -5,10 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.yunhwan.moviereview.entity.Movie;
+import org.yunhwan.moviereview.repository.search.SearchBoardRepository;
 
 import java.util.List;
 
-public interface MovieRepository extends JpaRepository<Movie, Long> {
+public interface MovieRepository extends JpaRepository<Movie, Long>, SearchBoardRepository {
 
 
     /**
