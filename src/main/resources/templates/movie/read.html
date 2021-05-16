@@ -7,7 +7,6 @@
 
         <h1 class="mt-4">영화 조회 페이지</h1>
 
-
         <div class="form-group">
             <label >영화 제목</label>
             <input type="text" class="form-control" name="title" th:value="${dto.title}" readonly>
@@ -44,13 +43,12 @@
         </div>
         <!--  수정 과 목록 버튼       -->
 
-        <a th:href="@{'/movie/' + ${dto.mno} + '/modify'}">
-
+        <a th:href="@{'/movie/' + ${dto.mno} + '/modify'(page=${requestDTO.page}, type=${requestDTO.type}, keyword = ${requestDTO.keyword})}">
             <button type="button" class="btn btn-primary">수정하기</button>
         </a>
-<!--        <a th:href="@{/board/list(page=${requestDTO.page} , type=${requestDTO.type}, keyword =${requestDTO.keyword})}">-->
-<!--            <button type="button" class="btn btn-info">List</button>-->
-<!--        </a>-->
+        <a th:href="@{/movie/list(page=${requestDTO.page} , type=${requestDTO.type}, keyword =${requestDTO.keyword})}">
+            <button type="button" class="btn btn-info">목록으로..</button>
+        </a>
 
 
         <style>

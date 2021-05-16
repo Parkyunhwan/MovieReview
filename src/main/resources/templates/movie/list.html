@@ -15,8 +15,29 @@
         </h1>
 
         <form action="/movie/list" method="get" id="searchForm">
-            <input type="hidden" name="page" value="1">
+            <div class="input-group">
+                <input type="hidden" name="page" value = "1">
+                <div class="input-group-prepend">
+                    <select class="custom-select" name="type">
+                        <option th:selected="${pageRequestDTO.type == null}">-------</option>
+                        <option value="t" th:selected="${pageRequestDTO.type =='t'}" >제목</option>
+                        <option value="c" th:selected="${pageRequestDTO.type =='c'}"  >국가</option>
+                        <option value="r"  th:selected="${pageRequestDTO.type =='r'}" >등급</option>
+                        <option value="tc"  th:selected="${pageRequestDTO.type =='tc'}" >제목 + 국가</option>
+                        <option value="tcr"  th:selected="${pageRequestDTO.type =='tcr'}" >제목 + 국가 + 등급</option>
+                    </select>
+                </div>
+                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                <div class="input-group-append" id="button-addon4">
+                    <button class="btn btn-outline-secondary btn-search" type="button">검색</button>
+                    <button class="btn btn-outline-secondary btn-clear" type="button">조건 삭제</button>
+                </div>
+            </div>
         </form>
+
+<!--        <form action="/movie/list" method="get" id="searchForm">-->
+<!--            <input type="hidden" name="page" value="1">-->
+<!--        </form>-->
 
         <table class="table table-striped">
             <thead>
@@ -33,13 +54,13 @@
             <tr th:each="dto : ${result.dtoList}">
                 <th scope="row">
 <!--                    링크 연결-->
-                    <a th:href="@{'/movie/' + ${dto.mno}}">
+                    <a th:href="@{'/movie/' + ${dto.mno}(page=${result.page}, type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
                         [[${dto.mno}]]
                     </a>
                 </th>
 
 <!--                값이 있는지 검사 먼저 진행 후 -> 사진 꺼내오기 -->
-                <td><a th:href="@{/movie/read(mno = ${dto.mno}, page=${result.page})}"><img class="img-thumbnail thumb" th:if="${dto.imageDTOList.size() > 0 && dto.imageDTOList[0].path != null}"
+                <td><a th:href="@{'/movie/' + ${dto.mno}(page=${result.page}, type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}"><img class="img-thumbnail thumb" th:if="${dto.imageDTOList.size() > 0 && dto.imageDTOList[0].path != null}"
                          th:src="|/display?fileName=${dto.imageDTOList[0].getThumbnailURL()}|"></a>[[${dto.title}]]
                 </td>
                 <td><span class="badge badge-dark"><b>[[${dto.reviewCnt}]]</b></span></td>
@@ -56,21 +77,37 @@
         <ul class="pagination h-100 justify-content-center align-items-center">
 
             <li class="page-item " th:if="${result.prev}">
-                <a class="page-link" th:href="@{/movie/list(page= ${result.start -1})}" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/movie/list(page= ${result.start -1}, type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}" tabindex="-1">Previous</a>
             </li>
 
             <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
-                <a class="page-link" th:href="@{/movie/list(page = ${page})}">
+                <a class="page-link" th:href="@{/movie/list(page = ${page}, type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
                     [[${page}]]
                 </a>
             </li>
 
             <li class="page-item" th:if="${result.next}">
-                <a class="page-link" th:href="@{/movie/list(page= ${result.end + 1} )}">Next</a>
+                <a class="page-link" th:href="@{/movie/list(page= ${result.end + 1}, type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword} )}">Next</a>
             </li>
         </ul>
         <!--    페이지 번호와 이동을 위한 코드    -->
         <script th:inline="javascript">
+            var msg = [[${msg}]];
+            console.log(msg);
+
+            if (msg) {
+                $(".modal").modal();
+            }
+
+            var searchForm = $("#searchForm");
+
+            $('.btn-search').click(function (e) {
+                searchForm.submit();
+            });
+
+            $('.btn-clear').click(function (e) {
+                searchForm.empty().submit();
+            });
         </script>
     </th:block>
 </th:block>
