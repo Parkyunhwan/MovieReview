@@ -51,9 +51,11 @@ class MovieRepositoryTest {
     @Test
     public void SearchPage정상작동테스트() throws Exception {
         //given
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending());
+        //Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending());
 
-        Page<Object[]> result = movieRepository.searchPage("trc", "영국", pageable);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending().and(Sort.by("title").ascending()));
+
+        Page<Object[]> result = movieRepository.searchPage("trc", "1", pageable);
         //when
 
         //then
