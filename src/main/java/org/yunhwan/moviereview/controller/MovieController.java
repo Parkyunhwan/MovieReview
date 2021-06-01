@@ -22,19 +22,19 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @Controller
-@RequestMapping("/movie")
+@RequestMapping("movie")
 @RequiredArgsConstructor
 @Log4j2
 public class MovieController {
 
     private final MovieService movieService;
 
-    @GetMapping("/register")
+    @GetMapping("register")
     public void register() {
 
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public String register(MovieDTO movieDTO, RedirectAttributes redirectAttributes) {
         log.info("movieDTO: " + movieDTO); // 넘어온 movieDTO
 
@@ -45,14 +45,14 @@ public class MovieController {
         return "redirect:movie/list"; // 등록 후 영화 목록 페이지로 리다이렉트
     }
 
-    @GetMapping("/list")
+    @GetMapping("list")
     public void list(PageRequestDTO pageRequestDTO, Model model) {
         log.info("pageReqestDTO: " + pageRequestDTO);
         PageResultDTO<MovieDTO, Object[]> list = movieService.getList(pageRequestDTO);
         model.addAttribute("result", list);
     }
 
-    @GetMapping("/{mno}")
+    @GetMapping("{mno}")
     public String readMovie(@PathVariable long mno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
         log.info("mno: " + mno);
 
@@ -63,7 +63,7 @@ public class MovieController {
         return "movie/read";
     }
 
-    @GetMapping("/{mno}/modify")
+    @GetMapping("{mno}/modify")
     public String modifyPage(@PathVariable long mno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
         log.info("mno: " + mno);
 
