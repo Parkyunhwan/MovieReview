@@ -42,7 +42,7 @@ public class MovieController {
 
         redirectAttributes.addFlashAttribute("msg", mno); // 저장후 생성된 mno를 특성에 넣어서 반환
 
-        return "redirect:/movie/list"; // 등록 후 영화 목록 페이지로 리다이렉트
+        return "redirect:movie/list"; // 등록 후 영화 목록 페이지로 리다이렉트
     }
 
     @GetMapping("/list")
@@ -60,7 +60,7 @@ public class MovieController {
 
         model.addAttribute("dto", movieDTO);
 
-        return "/movie/read";
+        return "movie/read";
     }
 
     @GetMapping("/{mno}/modify")
@@ -71,7 +71,7 @@ public class MovieController {
 
         model.addAttribute("dto", movieDTO);
 
-        return "/movie/modify";
+        return "movie/modify";
     }
 
     @DeleteMapping("/{mno}")
