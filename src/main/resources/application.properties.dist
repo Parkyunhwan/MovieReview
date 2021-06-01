@@ -1,0 +1,28 @@
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
+spring.datasource.url=jdbc:mariadb://[AWS RDS]:3306/[database]?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+spring.datasource.username=[username]
+spring.datasource.password=[password]
+
+
+spring.jpa.hibernate.ddl-auto=
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.show-sql=true
+
+
+spring.thymeleaf.cache=false
+
+# 서블릿의 자체적인 파일 업로드 라이브러리 이용 설정
+
+spring.servlet.multipart.enabled=true
+
+# 업로드 된 파일의 "임시 저장 경로"
+spring.servlet.multipart.location=[save path]
+
+# 한번에 최대 업로드 용량 설정
+spring.servlet.multipart.max-request-size=[max size]
+spring.servlet.multipart.max-file-size=[max-file-size]
+
+# 파일 업로드 시 저장 경로
+org.yunhwan.upload.path=[file path]
+
+
