@@ -70,7 +70,7 @@ class ReviewRepositoryTest {
         }
         //when
 
-///        reviewRepository.deleteByMovie_Mno(m.getMno());
+        reviewRepository.deleteByMovie(m);
         //then
         List<Review> after = reviewRepository.findByMovie(m);
         System.out.println(after);
@@ -85,20 +85,20 @@ class ReviewRepositoryTest {
     @Test
     public void insertReviews() throws Exception {
         //given
-        IntStream.rangeClosed(1, 200).forEach(i -> {
-            Long mno = (long)(Math.random() * 100) + 1; //영화
-
-            Long mid = (long)(Math.random() * 100) + 1; //멤버
-
-            Review review = Review.builder()
-                    .movie(Movie.builder().mno(mno).build())
-                    .member(Member.builder().mid(mid).build())
-                    .grade((int)(Math.random() * 5) + 1)
-                    .text("이 영화에 대한 나의 평가는...?" + i + "번째 리뷰")
-                    .build();
-
-            reviewRepository.save(review);
-        });
+//        IntStream.rangeClosed(1, 200).forEach(i -> {
+//            Long mno = (long)(Math.random() * 100) + 1; //영화
+//
+//            Long mid = (long)(Math.random() * 100) + 1; //멤버
+//
+//            Review review = Review.builder()
+//                    .movie(Movie.builder().mno(mno).build())
+//                    .member(Member.builder().mid(mid).build())
+//                    .grade((int)(Math.random() * 5) + 1)
+//                    .text("이 영화에 대한 나의 평가는...?" + i + "번째 리뷰")
+//                    .build();
+//
+//            reviewRepository.save(review);
+//        });
         //when
 
         //then
@@ -119,7 +119,7 @@ class ReviewRepositoryTest {
         //when
         List<Review> result = reviewRepository.findByMovie(movie);
         //then
-        Assertions.assertThat(4).isEqualTo(result.size());
+        //Assertions.assertThat(4).isEqualTo(result.size());
         result.forEach(movieReview ->{
             System.out.print(movieReview.getReviewnum());
             System.out.print("\t" + movieReview.getGrade());
@@ -130,28 +130,15 @@ class ReviewRepositoryTest {
     }
 
     // 1. FK 쪽을 먼저 삭제하고 PK쪽을 삭제해야만 한다. 2. 두 가지 삭제 행동은 한번에 수행되어야만 하기 때문에 @Transactional과 @Commit을 넣어준다.
-    @Test
-    public void 회원의_모든_댓글삭제_후_회원삭제_실패테스트() throws Exception {
-        //given
-        Long mid = 1L;
-        //when
-        Member member = Member.builder().mid(mid).build();
-        memberRepository.deleteById(mid);
-        reviewRepository.deleteByMember(member);
-        //then
-    }
-
-    @Commit
     @Transactional
     @Test
     public void 회원의_모든_댓글삭제_후_회원삭제_성공테스트() throws Exception {
         //given
-        Long mid = 1L;
-        //when
-        Member member = Member.builder().mid(mid).build();
+        Member member1 = Member.builder().nickname("testname").build();
+        Member member = memberRepository.save(member1);
 
         reviewRepository.deleteByMember(member);
-        memberRepository.deleteById(mid);
+        memberRepository.deleteById(member.getMid());
         //then
     }
 }

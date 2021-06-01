@@ -18,15 +18,15 @@ class MemberRepositoryTest {
     @Test
     public void insertMembers() throws Exception {
         //given
-        IntStream.rangeClosed(1, 100).forEach(i -> {
-            Member member = Member.builder()
-                    .email("email_" + i + "@gmail.com")
-                    .pw("1111")
-                    .nickname("Reviewer" + i)
-                    .build();
-
-            memberRepository.save(member);
-        });
+//        IntStream.rangeClosed(1, 100).forEach(i -> {
+//            Member member = Member.builder()
+//                    .email("email_" + i + "@gmail.com")
+//                    .pw("1111")
+//                    .nickname("Reviewer" + i)
+//                    .build();
+//
+//            memberRepository.save(member);
+//        });
         //when
 
         //then
