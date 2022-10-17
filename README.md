@@ -41,3 +41,12 @@
   * 영화의 특정 리뷰 삭제
     * `/reviews/{mno}/{reviewnum}`
     * method : DELETE
+
+# 리팩터링
+
+## 1차 리팩터링 적용 사항
+* [] Convention에 맞춰 리팩터링 진행
+* [] model에 넘겨주는 데이터를 넘겨주는 구조에서 REST API 형태로 변경
+* [] 이벤트스토밍을 통해 도메인 이해
+
+ 
