@@ -32,13 +32,15 @@ public class MovieServiceImpl implements MovieService{
     @Transactional
     @Override
     public void removeWithReplies(Long mno) {
-
         // review, movie image 부터 삭제..
-        Movie movie = movieRepository.getOne(mno);
-        reviewRepository.deleteByMovie(movie);
-        movieImageRepositroy.deleteByMovie(movie);
-
-        // movie 삭제..
+        movieRepository.findById(mno)
+                .ifPresentOrElse((movie) -> {
+                    reviewRepository.deleteByMovie(movie);
+                    movieImageRepositroy.deleteByMovie(movie);
+                    }
+                    , () -> {
+                    throw new IllegalArgumentException("해당 영화는 존재하지 않습니다.");
+                });
         movieRepository.deleteById(mno);
     }
 
@@ -102,6 +104,43 @@ public class MovieServiceImpl implements MovieService{
         return new PageResultDTO<>(result, fn);
     }
 
+
+    public PageResultDTO<MovieDTO, Object[]> getList2(PageRequestDTO requestDTO) {
+
+        //넘겨줄 페이지 정보 제작 (파라미터 -> 소트 정보)
+        Pageable pageable = requestDTO.getPageable(Sort.by("mno").descending());
+
+        // 여러 엔티티가 섞여있는 데이터이므로 Object[]로 받도록 함.
+
+        //Page<Object[]> result = movieRepository.getListPage(pageable); -> no search logic
+
+        // Add search logic
+        Page<Object[]> result = movieRepository.searchPage(requestDTO.getType(),
+                requestDTO.getKeyword(),
+                requestDTO.getPageable(Sort.by("mno").descending()));
+
+        // <파라미터, 리턴값>
+        Function<Object[], MovieDTO> fn = (arr -> {
+            if (arr[1] != null) {
+                return entitiesToDTO(
+                        (Movie) arr[0],
+                        (List<MovieImage>) (Arrays.asList((MovieImage) arr[1])),
+                        (Double) arr[2],
+                        (Long) arr[3]);
+            } else {
+                return entitiesToDTO(
+                        (Movie) arr[0],
+                        Collections.emptyList(),
+                        (Double) arr[2],
+                        (Long) arr[3]);
+            }
+        }
+        );
+
+        // 데이터 + 적용할 함수.
+        return new PageResultDTO<>(result, fn);
+    }
+
     @Override
     public MovieDTO getMovie(Long mno) {
         List<Object[]> movieWithAll = movieRepository.getMovieWithAll(mno);
@@ -124,10 +163,14 @@ public class MovieServiceImpl implements MovieService{
     @Transactional
     @Override
     public void modify(MovieDTO movieDTO) {
-        Movie movie = movieRepository.getOne(movieDTO.getMno());
-        log.info(movieDTO);
-        movie.changeTitle(movieDTO.getTitle(), movieDTO.getOpenDate(), movieDTO.getRunningTime()
-                , movieDTO.getCountry(), movieDTO.getRating());
-        // 엔티티매니저가 "변경 감지" 하기 때문에 따로 save 쿼리 안날렷음.
+        log.info("영화 수정 정보 movieDTO : {}", movieDTO);
+        movieRepository.findById(movieDTO.getMno())
+                .ifPresentOrElse((movie) ->
+                                movie.changeTitle(movieDTO.getTitle(), movieDTO.getOpenDate(),
+                                        movieDTO.getRunningTime(), movieDTO.getCountry(),
+                                        movieDTO.getRating())
+                        , () -> new IllegalArgumentException("해당 영화는 존재하지 않습니다.")
+                );
+        // 엔티티매니저가 "변경 감지" 하기 때문에 따로 save 쿼리 X
     }
 }
