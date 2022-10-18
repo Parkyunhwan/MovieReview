@@ -1,15 +1,18 @@
 package org.yunhwan.moviereview.service;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.yunhwan.moviereview.dto.MovieDTO;
-import org.yunhwan.moviereview.dto.PageRequestDTO;
-import org.yunhwan.moviereview.dto.PageResultDTO;
+import org.yunhwan.moviereview.dto.MovieSearchRequestDTO;
+import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
+import org.yunhwan.moviereview.dto.MovieSearchVO;
 import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.entity.MovieImage;
 import org.yunhwan.moviereview.repository.MovieImageRepositroy;
@@ -18,7 +21,6 @@ import org.yunhwan.moviereview.repository.ReviewRepository;
 
 
 import java.util.*;
-import java.util.function.Function;
 
 @Service
 @Log4j2
@@ -69,76 +71,19 @@ public class MovieServiceImpl implements MovieService{
     }
 
     @Override
-    public PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO requestDTO) {
+    public Page<MovieSearchResponseDTO> getList(MovieSearchRequestDTO requestDTO, Pageable pageable) {
+        Sort sort = pageable.getSort();
+        sort.and(Sort.by("mno").descending());
 
-        //넘겨줄 페이지 정보 제작 (파라미터 -> 소트 정보)
-        Pageable pageable = requestDTO.getPageable(Sort.by("mno").descending());
-
-        // 여러 엔티티가 섞여있는 데이터이므로 Object[]로 받도록 함.
-
-        //Page<Object[]> result = movieRepository.getListPage(pageable); -> no search logic
-
-        // Add search logic
-        Page<Object[]> result = movieRepository.searchPage(requestDTO.getType(), requestDTO.getKeyword(),
-                requestDTO.getPageable(Sort.by("mno").descending()));
-
-        // <파라미터, 리턴값>
-        Function<Object[], MovieDTO> fn = (arr -> {
-            if (arr[1] != null) {
-                return entitiesToDTO(
-                        (Movie) arr[0],
-                        (List<MovieImage>) (Arrays.asList((MovieImage) arr[1])),
-                        (Double) arr[2],
-                        (Long) arr[3]);
-            } else {
-                return entitiesToDTO(
-                        (Movie) arr[0],
-                        Collections.emptyList(),
-                        (Double) arr[2],
-                        (Long) arr[3]);
-            }
-        }
-        );
-
+        Page<MovieSearchVO> movieSearchVOS = movieRepository.searchPage(requestDTO.getType(),
+                requestDTO.getKeyword(), pageable);
+        List<MovieSearchResponseDTO> movieSearchResponseDTOS = movieSearchVOS.stream()
+                .map((movieSearchVO -> {
+                    return new MovieSearchResponseDTO(movieSearchVO);
+                }))
+                .collect(Collectors.toList());
         // 데이터 + 적용할 함수.
-        return new PageResultDTO<>(result, fn);
-    }
-
-
-    public PageResultDTO<MovieDTO, Object[]> getList2(PageRequestDTO requestDTO) {
-
-        //넘겨줄 페이지 정보 제작 (파라미터 -> 소트 정보)
-        Pageable pageable = requestDTO.getPageable(Sort.by("mno").descending());
-
-        // 여러 엔티티가 섞여있는 데이터이므로 Object[]로 받도록 함.
-
-        //Page<Object[]> result = movieRepository.getListPage(pageable); -> no search logic
-
-        // Add search logic
-        Page<Object[]> result = movieRepository.searchPage(requestDTO.getType(),
-                requestDTO.getKeyword(),
-                requestDTO.getPageable(Sort.by("mno").descending()));
-
-        // <파라미터, 리턴값>
-        Function<Object[], MovieDTO> fn = (arr -> {
-            if (arr[1] != null) {
-                return entitiesToDTO(
-                        (Movie) arr[0],
-                        (List<MovieImage>) (Arrays.asList((MovieImage) arr[1])),
-                        (Double) arr[2],
-                        (Long) arr[3]);
-            } else {
-                return entitiesToDTO(
-                        (Movie) arr[0],
-                        Collections.emptyList(),
-                        (Double) arr[2],
-                        (Long) arr[3]);
-            }
-        }
-        );
-
-        // 데이터 + 적용할 함수.
-        return new PageResultDTO<>(result, fn);
+        return new PageImpl<MovieSearchResponseDTO>(movieSearchResponseDTOS, pageable, pageable.getPageSize());
     }
 
     @Override

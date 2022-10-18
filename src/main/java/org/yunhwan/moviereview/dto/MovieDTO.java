@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.yunhwan.moviereview.entity.Movie;
 
 @Data
 @Builder
@@ -46,4 +47,15 @@ public class MovieDTO {
     private Long runningTime;
 
     private String country;
+
+    public MovieDTO(Movie movie) {
+        this.mno = movie.getMno();
+        this.title = movie.getTitle();
+        this.regDate = movie.getRegDate();
+        this.modDate = movie.getModDate();
+        this.openDate = movie.getOpenDate();
+        this.rating = movie.getRating();
+        this.runningTime = movie.getRunningTime();
+        this.country = movie.getCountry();
+    }
 }

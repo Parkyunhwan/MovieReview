@@ -1,10 +1,11 @@
 package org.yunhwan.moviereview.service;
 
-import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.yunhwan.moviereview.dto.MovieDTO;
 import org.yunhwan.moviereview.dto.MovieImageDTO;
-import org.yunhwan.moviereview.dto.PageRequestDTO;
-import org.yunhwan.moviereview.dto.PageResultDTO;
+import org.yunhwan.moviereview.dto.MovieSearchRequestDTO;
+import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
 import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.entity.MovieImage;
 
@@ -20,7 +21,7 @@ public interface MovieService {
 
     Long register(MovieDTO movieDTO);
 
-    PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO requestDTO);
+    Page<MovieSearchResponseDTO> getList(MovieSearchRequestDTO movieSearchRequestDTO, Pageable pageable);
 
     MovieDTO getMovie(Long mno);
 
