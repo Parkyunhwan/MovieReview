@@ -40,7 +40,8 @@ public class ReviewController {
     }
 
     @PutMapping("/{mno}/{reviewnum}")
-    public ResponseEntity<Long> modifyReview(@PathVariable Long reviewnum, @RequestBody ReviewDTO reviewDTO) {
+    public ResponseEntity<Long> modifyReview(@PathVariable Long reviewnum,
+            @RequestBody ReviewDTO reviewDTO) {
         log.info("ModifyReview Controller -------- ReviewDTO: " + reviewDTO);
 
         reviewService.modify(reviewDTO);

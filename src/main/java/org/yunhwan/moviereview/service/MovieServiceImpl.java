@@ -25,7 +25,7 @@ import java.util.*;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class MovieServiceImpl implements MovieService{
+public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
     private final MovieImageRepositroy movieImageRepositroy;
@@ -35,19 +35,17 @@ public class MovieServiceImpl implements MovieService{
     @Override
     public void removeWithReplies(Long mno) {
         // review, movie image 부터 삭제..
-        movieRepository.findById(mno)
-                .ifPresentOrElse((movie) -> {
-                    reviewRepository.deleteByMovie(movie);
-                    movieImageRepositroy.deleteByMovie(movie);
-                    }
-                    , () -> {
-                    throw new IllegalArgumentException("해당 영화는 존재하지 않습니다.");
-                });
+        Movie movie = movieRepository.findById(mno)
+                .orElseThrow(() -> new IllegalArgumentException("해당 영화는 존재하지 않습니다."));
+        reviewRepository.deleteByMovie(movie);
+        movieImageRepositroy.deleteByMovie(movie);
+
         movieRepository.deleteById(mno);
     }
 
     /**
      * 영화와 영화관련 이미지를 저장 후 (영화 번호) 반환
+     *
      * @param movieDTO
      * @return
      */
@@ -71,18 +69,17 @@ public class MovieServiceImpl implements MovieService{
     }
 
     @Override
-    public Page<MovieSearchResponseDTO> getList(MovieSearchRequestDTO requestDTO, Pageable pageable) {
+    public Page<MovieSearchResponseDTO> getList(MovieSearchRequestDTO requestDTO,
+            Pageable pageable) {
         Sort sort = pageable.getSort();
         sort.and(Sort.by("mno").descending());
 
         Page<MovieSearchVO> movieSearchVOS = movieRepository.searchPage(requestDTO.getType(),
                 requestDTO.getKeyword(), pageable);
         List<MovieSearchResponseDTO> movieSearchResponseDTOS = movieSearchVOS.stream()
-                .map((movieSearchVO -> {
-                    return new MovieSearchResponseDTO(movieSearchVO);
-                }))
+                .map((MovieSearchResponseDTO::new))
                 .collect(Collectors.toList());
-        // 데이터 + 적용할 함수.
+
         return new PageImpl<>(movieSearchResponseDTOS, pageable, pageable.getPageSize());
     }
 
@@ -94,7 +91,7 @@ public class MovieServiceImpl implements MovieService{
 
         List<MovieImage> movieImageList = new ArrayList<>();
 
-        movieWithAll.forEach(arr ->{
+        movieWithAll.forEach(arr -> {
             MovieImage movieImage = (MovieImage) arr[1];
             movieImageList.add(movieImage);
         });
@@ -109,13 +106,12 @@ public class MovieServiceImpl implements MovieService{
     @Override
     public void modify(MovieDTO movieDTO) {
         log.info("영화 수정 정보 movieDTO : {}", movieDTO);
-        movieRepository.findById(movieDTO.getMno())
-                .ifPresentOrElse((movie) ->
-                                movie.changeTitle(movieDTO.getTitle(), movieDTO.getOpenDate(),
-                                        movieDTO.getRunningTime(), movieDTO.getCountry(),
-                                        movieDTO.getRating())
-                        , () -> new IllegalArgumentException("해당 영화는 존재하지 않습니다.")
-                );
+        Movie movie = movieRepository.findById(movieDTO.getMno())
+                .orElseThrow(() -> new IllegalArgumentException("해당 영화는 존재하지 않습니다."));
+
+        movie.changeTitle(movieDTO.getTitle(), movieDTO.getOpenDate(),
+                movieDTO.getRunningTime(), movieDTO.getCountry(),
+                movieDTO.getRating());
         // 엔티티매니저가 "변경 감지" 하기 때문에 따로 save 쿼리 X
     }
 }
