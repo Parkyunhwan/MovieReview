@@ -22,14 +22,11 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService{
 
     private final ReviewRepository reviewRepository;
-    private final MovieRepository movieRepository;
-
 
     @Override
     public Long register(ReviewDTO reviewDTO) {
-        log.info("Review register-----------------!! " + reviewDTO);
+        log.info("Review register-----------------" + reviewDTO);
         Review review = dtoToEntity(reviewDTO);
-        log.info(review);
         reviewRepository.save(review);
 
         return review.getReviewnum();
@@ -42,21 +39,20 @@ public class ReviewServiceImpl implements ReviewService{
         Movie movie = Movie.builder().mno(mno).build();
         List<Review> result = reviewRepository.findByMovie(movie);
 
-        return result.stream().map(review -> entityToDto(review)).collect(Collectors.toList());
+        return result.stream()
+                .map(this::entityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public void modify(ReviewDTO reviewDTO) {
-        log.info("Review Modify---------------!!");
+        log.info("Review Modify---------------");
 
-        Optional<Review> result = reviewRepository.findById(reviewDTO.getReviewnum());
-
-        if (result.isPresent()) {
-            Review review = result.get();
-            review.changeGrade(reviewDTO.getGrade());
-            review.changeText(reviewDTO.getText());
-        }
+        Review review = reviewRepository.findById(reviewDTO.getReviewnum())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰번호입니다."));
+        review.changeGrade(reviewDTO.getGrade());
+        review.changeText(reviewDTO.getText());
     }
 
     @Override

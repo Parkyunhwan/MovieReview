@@ -83,7 +83,7 @@ public class MovieServiceImpl implements MovieService{
                 }))
                 .collect(Collectors.toList());
         // 데이터 + 적용할 함수.
-        return new PageImpl<MovieSearchResponseDTO>(movieSearchResponseDTOS, pageable, pageable.getPageSize());
+        return new PageImpl<>(movieSearchResponseDTOS, pageable, pageable.getPageSize());
     }
 
     @Override
