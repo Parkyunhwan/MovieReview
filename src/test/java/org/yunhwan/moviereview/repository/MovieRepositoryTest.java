@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
 import java.util.List;
+import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,7 +56,7 @@ class MovieRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending().and(Sort.by("title").ascending()));
 
-        Page<Object[]> result = movieRepository.searchPage("trc", "1", pageable);
+        Page<MovieSearchResponseDTO> trc = movieRepository.searchPage("trc", "1", pageable);
         //when
 
         //then

@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 public interface MovieService {
 
     // 댓글과 함께 영화 삭제
-    void removeWithReplies(Long mno);
+    void deleteMovie(Long mno);
 
-    Long register(MovieDTO movieDTO);
+    Long createMovie(MovieDTO movieDTO);
 
-    Page<MovieSearchResponseDTO> getList(MovieSearchRequestDTO movieSearchRequestDTO, Pageable pageable);
+    Page<MovieSearchResponseDTO> findAllMovies(MovieSearchRequestDTO movieSearchRequestDTO, Pageable pageable);
 
-    MovieDTO getMovie(Long mno);
+    MovieDTO findMovie(Long mno);
 
-    void modify(MovieDTO movieDTO);
+    void updateMovie(Long mno, MovieDTO movieDTO);
 
     /**
      * Movie, MovieImage 리스트, 평균, 리뷰갯수를 조회해서 DTO값에 넣어주는 작업.
@@ -37,7 +37,7 @@ public interface MovieService {
      */
     default MovieDTO entitiesToDTO(Movie movie, List<MovieImage> movieImages, Double avg, Long reviewCnt) {
         MovieDTO movieDTO = MovieDTO.builder()
-                .mno(movie.getMno())
+                .id(movie.getId())
                 .title(movie.getTitle())
                 .runningTime(movie.getRunningTime())
                 .rating(movie.getRating())
@@ -77,7 +77,7 @@ public interface MovieService {
         Map<String, Object> entityMap = new HashMap<>();
 
         Movie movie = Movie.builder()
-                .mno(movieDTO.getMno())
+                .id(movieDTO.getId())
                 .title(movieDTO.getTitle())
                 .country(movieDTO.getCountry())
                 .openDate(movieDTO.getOpenDate())

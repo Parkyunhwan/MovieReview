@@ -1,7 +1,10 @@
 package org.yunhwan.moviereview.dto;
 
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
+import org.yunhwan.moviereview.entity.Movie;
+import org.yunhwan.moviereview.entity.MovieImage;
 
 @Getter
 @Setter
@@ -12,9 +15,13 @@ public class MovieSearchResponseDTO {
     private double avg;
     private long cnt;
 
-    public MovieSearchResponseDTO(MovieSearchVO movieSearchVO) {
-        this.movieDTO = new MovieDTO(movieSearchVO.getMovie());
-        this.avg = movieSearchVO.getAvg();
-        this.cnt = movieSearchVO.getReviewCnt();
+    public MovieSearchResponseDTO(Movie movie, MovieImage movieImage, double avg, long cnt) {
+        this.movieDTO = new MovieDTO(movie);
+        Optional.ofNullable(movieImage)
+                .ifPresent((image) ->
+                        this.movieImageDTO = new MovieImageDTO(image.getUuid(), image.getImgName(), image.getPath())
+                );
+        this.avg = avg;
+        this.cnt = cnt;
     }
 }

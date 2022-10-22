@@ -13,7 +13,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -21,11 +20,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.yunhwan.moviereview.dto.MovieSearchVO;
+import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
 import org.yunhwan.moviereview.entity.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport implements SearchMovieRepository {
@@ -59,10 +57,9 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public Page<MovieSearchVO> searchPage(String type, String keyword, Pageable pageable) {
-        log.info("Movie SearchPage========================+");
-        List<MovieSearchVO> result = queryFactory
-                .select(Projections.fields(MovieSearchVO.class,
+    public Page<MovieSearchResponseDTO> searchPage(String type, String keyword, Pageable pageable) {
+        List<MovieSearchResponseDTO> result = queryFactory
+                .select(Projections.constructor(MovieSearchResponseDTO.class,
                         movie, movieImage, review.grade.avg().coalesce(0.0).as("avg"), review.count().as("reviewCnt"))
                 )
                 .from(movie)
@@ -78,12 +75,11 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        int count = result.size();
 
         return new PageImpl<>(
                 result
                 , pageable
-                , count
+                , pageable.getPageSize()
         );
     }
 
@@ -119,6 +115,6 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     private static BooleanExpression mnoGreatherThanZero() {
-        return movie.mno.gt(0L);
+        return movie.id.gt(0L);
     }
 }

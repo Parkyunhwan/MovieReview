@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Transactional
     @Override
-    public void removeWithReplies(Long mno) {
+    public void deleteMovie(Long mno) {
         // review, movie image 부터 삭제..
         Movie movie = movieRepository.findById(mno)
                 .orElseThrow(() -> new IllegalArgumentException("해당 영화는 존재하지 않습니다."));
@@ -51,40 +52,42 @@ public class MovieServiceImpl implements MovieService {
      */
     @Transactional
     @Override
-    public Long register(MovieDTO movieDTO) {
-
-        Map<String, Object> entityMap = dtoToEntity(movieDTO);
-        Movie movie = (Movie) entityMap.get("movie");
-
-        //영화 등록
+    public Long createMovie(MovieDTO movieDTO) {
+        Movie movie = Movie.builder()
+                .id(movieDTO.getId())
+                .title(movieDTO.getTitle())
+                .country(movieDTO.getCountry())
+                .openDate(movieDTO.getOpenDate())
+                .runningTime(movieDTO.getRunningTime())
+                .rating(movieDTO.getRating())
+                .build();
         movieRepository.save(movie);
 
-        if (entityMap.containsKey("imgList")) {
-            List<MovieImage> movieImageList = (List<MovieImage>) entityMap.get("imgList");
-            movieImageList.forEach(movieImage -> {
-                movieImageRepositroy.save(movieImage);
-            });
-        }
-        return movie.getMno();
+        Optional.of(movieDTO.getImageDTOList())
+                        .ifPresent(movieImageDTOS ->
+                        {
+                            List<MovieImage> movieImages = movieImageDTOS.stream()
+                                    .map(movieImageDTO -> MovieImage.builder()
+                                            .path(movieImageDTO.getPath())
+                                            .imgName(movieImageDTO.getImgName())
+                                            .uuid(movieImageDTO.getUuid())
+                                            .movie(movie)
+                                            .build()
+                                    )
+                                    .collect(Collectors.toList());
+                            movieImageRepositroy.saveAll(movieImages);
+                        });
+        return movie.getId();
     }
 
     @Override
-    public Page<MovieSearchResponseDTO> getList(MovieSearchRequestDTO requestDTO,
-            Pageable pageable) {
-        Sort sort = pageable.getSort();
-        sort.and(Sort.by("mno").descending());
-
-        Page<MovieSearchVO> movieSearchVOS = movieRepository.searchPage(requestDTO.getType(),
-                requestDTO.getKeyword(), pageable);
-        List<MovieSearchResponseDTO> movieSearchResponseDTOS = movieSearchVOS.stream()
-                .map((MovieSearchResponseDTO::new))
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(movieSearchResponseDTOS, pageable, pageable.getPageSize());
+    public Page<MovieSearchResponseDTO> findAllMovies(MovieSearchRequestDTO requestDTO, Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").ascending());
+        return movieRepository.searchPage(requestDTO.getType(), requestDTO.getKeyword(), pageable);
     }
 
     @Override
-    public MovieDTO getMovie(Long mno) {
+    public MovieDTO findMovie(Long mno) {
         List<Object[]> movieWithAll = movieRepository.getMovieWithAll(mno);
 
         Movie movie = (Movie) movieWithAll.get(0)[0]; // 어차피 다 똑같은 Movie row
@@ -104,14 +107,18 @@ public class MovieServiceImpl implements MovieService {
 
     @Transactional
     @Override
-    public void modify(MovieDTO movieDTO) {
+    public void updateMovie(Long mno, MovieDTO movieDTO) {
         log.info("영화 수정 정보 movieDTO : {}", movieDTO);
-        Movie movie = movieRepository.findById(movieDTO.getMno())
+
+        Movie movie = movieRepository.findById(mno)
                 .orElseThrow(() -> new IllegalArgumentException("해당 영화는 존재하지 않습니다."));
 
-        movie.changeTitle(movieDTO.getTitle(), movieDTO.getOpenDate(),
-                movieDTO.getRunningTime(), movieDTO.getCountry(),
-                movieDTO.getRating());
-        // 엔티티매니저가 "변경 감지" 하기 때문에 따로 save 쿼리 X
+        movie.changeTitle(
+                movieDTO.getTitle(),
+                movieDTO.getOpenDate(),
+                movieDTO.getRunningTime(),
+                movieDTO.getCountry(),
+                movieDTO.getRating()
+        );
     }
 }

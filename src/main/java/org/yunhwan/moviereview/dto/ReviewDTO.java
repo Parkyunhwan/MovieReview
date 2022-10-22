@@ -22,7 +22,7 @@ public class ReviewDTO {
 
     private Long reviewnum;
 
-    private Long mno; // Moive
+    private Long movieId; // Moive
 
     // 작성자 Member 정보.
     private Long mid;

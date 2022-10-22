@@ -19,7 +19,7 @@ import org.yunhwan.moviereview.entity.Movie;
 @AllArgsConstructor
 public class MovieDTO {
 
-    private Long mno;
+    private Long id;
 
     private String title;
 
@@ -27,12 +27,9 @@ public class MovieDTO {
     @Builder.Default
     private List<MovieImageDTO> imageDTOList = new ArrayList<>();
 
-
-    // 아래 필드들은 무비 테이블에는 저장되지 않지만 화면 출력에 있어 필요하기 때문에 추가된 데이터.
     // 영화의 평균 평점
     private double avg;
 
-    // 리뷰 숫자
     private int reviewCnt;
 
     private LocalDateTime regDate;
@@ -49,7 +46,7 @@ public class MovieDTO {
     private String country;
 
     public MovieDTO(Movie movie) {
-        this.mno = movie.getMno();
+        this.id = movie.getId();
         this.title = movie.getTitle();
         this.regDate = movie.getRegDate();
         this.modDate = movie.getModDate();

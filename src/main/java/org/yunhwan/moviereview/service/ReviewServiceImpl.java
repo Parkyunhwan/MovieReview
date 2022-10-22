@@ -24,7 +24,7 @@ public class ReviewServiceImpl implements ReviewService{
     private final ReviewRepository reviewRepository;
 
     @Override
-    public Long register(ReviewDTO reviewDTO) {
+    public Long createReview(ReviewDTO reviewDTO) {
         log.info("Review register-----------------" + reviewDTO);
         Review review = dtoToEntity(reviewDTO);
         reviewRepository.save(review);
@@ -33,10 +33,10 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public List<ReviewDTO> getListOfMovie(Long mno) {
+    public List<ReviewDTO> findAllReviews(Long mno) {
         log.info("Review List Read-----------------!! ");
 
-        Movie movie = Movie.builder().mno(mno).build();
+        Movie movie = Movie.builder().id(mno).build();
         List<Review> result = reviewRepository.findByMovie(movie);
 
         return result.stream()
@@ -46,7 +46,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     @Transactional
-    public void modify(ReviewDTO reviewDTO) {
+    public void updateReview(ReviewDTO reviewDTO) {
         log.info("Review Modify---------------");
 
         Review review = reviewRepository.findById(reviewDTO.getReviewnum())
@@ -56,7 +56,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public void remove(Long reviewNum) {
+    public void deleteReview(Long reviewNum) {
         reviewRepository.deleteById(reviewNum);
     }
 }
