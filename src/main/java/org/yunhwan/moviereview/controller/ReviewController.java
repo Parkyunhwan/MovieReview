@@ -2,7 +2,6 @@ package org.yunhwan.moviereview.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,49 +19,38 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/{mno}")
-    public ResponseEntity<List<ReviewDTO>> getReviewList(
+    public ResponseEntity<List<ReviewDTO>> findAllReviews (
             @PathVariable("mno") Long mno
     ) {
         log.info("getReviewList Controller ---------------------------- MNO : " + mno);
-
-        List<ReviewDTO> listOfMovie = reviewService.getListOfMovie(mno);
-
-        return new ResponseEntity<>(listOfMovie, HttpStatus.OK);
+        return ResponseEntity.ok(reviewService.findAllReviews(mno));
     }
 
     @PostMapping("/{mno}")
-    public ResponseEntity<Long> addReview(
+    public ResponseEntity<Long> createReview (
             @RequestBody ReviewDTO reviewDTO
     ) {
         log.info("addReview Controller -------- ReviewDTO: " + reviewDTO);
-
-        Long regNum = reviewService.register(reviewDTO);
-
-        // PRG패턴을 컨트롤러 단에서 만들려 했으나 ajax 요청 시 응답 처리해줘야하므로 응답 처리에서 redirect처리 해줘야 함
-        //return "redirect:/movie/" + reviewDTO.getMno();
-        return new ResponseEntity<>(regNum, HttpStatus.OK);
+        reviewService.createReview(reviewDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{mno}/{reviewnum}")
-    public ResponseEntity<Long> modifyReview(
+    public ResponseEntity<Void> updateReview (
             @PathVariable Long reviewnum,
             @RequestBody ReviewDTO reviewDTO
     ) {
         log.info("ModifyReview Controller -------- ReviewDTO: " + reviewDTO);
-
-        reviewService.modify(reviewDTO);
-
-        return new ResponseEntity<>(reviewnum, HttpStatus.OK);
+        reviewService.updateReview(reviewDTO);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{mno}/{reviewnum}")
-    public ResponseEntity<Long> removeReview(
+    public ResponseEntity<Void> deleteReview (
             @PathVariable Long reviewnum
     ) {
         log.info("------------delete review ---- ReviewNum : " + reviewnum);
-
-        reviewService.remove(reviewnum);
-
-        return new ResponseEntity<>(reviewnum, HttpStatus.OK);
+        reviewService.deleteReview(reviewnum);
+        return ResponseEntity.ok().build();
     }
 }
