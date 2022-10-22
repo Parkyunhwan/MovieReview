@@ -20,7 +20,9 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/{mno}")
-    public ResponseEntity<List<ReviewDTO>> getReviewList(@PathVariable("mno") Long mno) {
+    public ResponseEntity<List<ReviewDTO>> getReviewList(
+            @PathVariable("mno") Long mno
+    ) {
         log.info("getReviewList Controller ---------------------------- MNO : " + mno);
 
         List<ReviewDTO> listOfMovie = reviewService.getListOfMovie(mno);
@@ -29,7 +31,9 @@ public class ReviewController {
     }
 
     @PostMapping("/{mno}")
-    public ResponseEntity<Long> addReview(@RequestBody ReviewDTO reviewDTO) {
+    public ResponseEntity<Long> addReview(
+            @RequestBody ReviewDTO reviewDTO
+    ) {
         log.info("addReview Controller -------- ReviewDTO: " + reviewDTO);
 
         Long regNum = reviewService.register(reviewDTO);
@@ -40,8 +44,10 @@ public class ReviewController {
     }
 
     @PutMapping("/{mno}/{reviewnum}")
-    public ResponseEntity<Long> modifyReview(@PathVariable Long reviewnum,
-            @RequestBody ReviewDTO reviewDTO) {
+    public ResponseEntity<Long> modifyReview(
+            @PathVariable Long reviewnum,
+            @RequestBody ReviewDTO reviewDTO
+    ) {
         log.info("ModifyReview Controller -------- ReviewDTO: " + reviewDTO);
 
         reviewService.modify(reviewDTO);
@@ -50,7 +56,9 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{mno}/{reviewnum}")
-    public ResponseEntity<Long> removeReview(@PathVariable Long reviewnum) {
+    public ResponseEntity<Long> removeReview(
+            @PathVariable Long reviewnum
+    ) {
         log.info("------------delete review ---- ReviewNum : " + reviewnum);
 
         reviewService.remove(reviewnum);

@@ -1,12 +1,14 @@
 package org.yunhwan.moviereview.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.jul.LogManager;
+import org.slf4j.impl.StaticLoggerBinder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,33 +27,42 @@ import org.yunhwan.moviereview.service.MovieService;
 @RestController
 @RequestMapping("movie")
 @RequiredArgsConstructor
+@Log4j2
 @Slf4j
 public class MovieController {
 
     private final MovieService movieService;
 
     @PostMapping
-    public ResponseEntity<Long> register(@RequestBody MovieDTO movieDTO) {
+    public ResponseEntity<Long> register(
+            @RequestBody MovieDTO movieDTO
+    ) {
         log.info("movieDTO: " + movieDTO);      // 넘어온 movieDTO
         return ResponseEntity.ok(movieService.register(movieDTO));
     }
 
     @GetMapping
-    public ResponseEntity<Page<MovieSearchResponseDTO>> list(MovieSearchRequestDTO movieSearchRequestDTO,
-            Pageable pageable) {
+    public ResponseEntity<Page<MovieSearchResponseDTO>> list(
+            MovieSearchRequestDTO movieSearchRequestDTO,
+            Pageable pageable
+    ) {
         return ResponseEntity.ok(movieService.getList(movieSearchRequestDTO, pageable));
     }
 
     @GetMapping("{mno}")
-    public ResponseEntity<MovieDTO> readMovie(@PathVariable long mno,
-            @ModelAttribute("requestDTO") PageRequestDTO requestDTO) {
+    public ResponseEntity<MovieDTO> readMovie(
+            @PathVariable long mno,
+            @ModelAttribute("requestDTO") PageRequestDTO requestDTO
+    ) {
         log.info("mno: " + mno);
         return ResponseEntity.ok(movieService.getMovie(mno));
     }
 
     @PutMapping("/{mno}")
     public ResponseEntity<String> modifyMovie(
-            @PathVariable("mno") Long mno, @RequestBody MovieDTO movieDTO) {
+            @PathVariable("mno") Long mno,
+            @RequestBody MovieDTO movieDTO
+    ) {
         log.info("modify mno " + mno);
         movieDTO.setMno(mno);
         movieService.modify(movieDTO);
@@ -60,7 +71,9 @@ public class MovieController {
     }
 
     @DeleteMapping("/{mno}")
-    public ResponseEntity<String> removeMovie(@PathVariable("mno") Long mno) {
+    public ResponseEntity<String> removeMovie(
+            @PathVariable("mno") Long mno
+    ) {
         log.info("delete mno " + mno);
         movieService.removeWithReplies(mno);
 
