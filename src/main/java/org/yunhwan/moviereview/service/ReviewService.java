@@ -10,34 +10,32 @@ import java.util.List;
 
 public interface ReviewService {
     //C
-    Long createReview(ReviewDTO reviewDTO);
+    Long create(Long movieId, ReviewDTO reviewDTO);
 
     //R
-    List<ReviewDTO> findAllReviews(Long mno);
+    List<ReviewDTO> findAll(Long mno);
 
     //U
-    void updateReview(ReviewDTO reviewDTO);
+    void update(Long movieId, ReviewDTO reviewDTO);
 
     //D
-    void deleteReview(Long reviewNum);
+    void delete(Long reviewNum);
 
-    default Review dtoToEntity(ReviewDTO reviewDTO) {
-        Review review = Review.builder()
-                .reviewnum(reviewDTO.getReviewnum())
+    default Review dtoToEntity(long movieId, ReviewDTO reviewDTO) {
+        return Review.builder()
+                .id(reviewDTO.getId())
                 .text(reviewDTO.getText())
                 .grade(reviewDTO.getGrade())
                 .member(Member.builder().mid(reviewDTO.getMid()).build())
-                .movie(Movie.builder().id(reviewDTO.getMovieId()).build())
+                .movie(Movie.builder().id(movieId).build())
                 .grade(reviewDTO.getGrade())
                 .text(reviewDTO.getText())
                 .build();
-
-        return review;
     }
 
     default ReviewDTO entityToDto(Review movieReview){
         ReviewDTO movieReviewDTO = ReviewDTO.builder()
-                .reviewnum(movieReview.getReviewnum())
+                .id(movieReview.getId())
                 .movieId(movieReview.getMovie().getId())
                 .mid(movieReview.getMember().getMid())
                 .nickname(movieReview.getMember().getNickname())

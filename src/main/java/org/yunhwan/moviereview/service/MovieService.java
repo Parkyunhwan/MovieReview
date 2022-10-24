@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 public interface MovieService {
 
     // 댓글과 함께 영화 삭제
-    void deleteMovie(Long mno);
+    void delete(Long mno);
 
     Long createMovie(MovieDTO movieDTO);
 
-    Page<MovieSearchResponseDTO> findAllMovies(MovieSearchRequestDTO movieSearchRequestDTO, Pageable pageable);
+    Page<MovieSearchResponseDTO> findAll(MovieSearchRequestDTO movieSearchRequestDTO, Pageable pageable);
 
-    MovieDTO findMovie(Long mno);
+    MovieDTO findOne(Long mno);
 
-    void updateMovie(Long mno, MovieDTO movieDTO);
+    void update(Long mno, MovieDTO movieDTO);
 
     /**
      * Movie, MovieImage 리스트, 평균, 리뷰갯수를 조회해서 DTO값에 넣어주는 작업.

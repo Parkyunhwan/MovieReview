@@ -28,7 +28,7 @@ public class MovieController {
     private final MovieService movieService;
 
     @PostMapping
-    public ResponseEntity<Long> createMovie (
+    public ResponseEntity<Long> create (
             @RequestBody MovieDTO movieDTO
     ) {
         log.info("[CREATE MOVIE] 영화 등록 요청 : movieDTO={}",movieDTO);
@@ -36,37 +36,37 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<MovieSearchResponseDTO>> findAllMovies (
+    public ResponseEntity<Page<MovieSearchResponseDTO>> findAll (
             MovieSearchRequestDTO movieSearchRequestDTO,
             @PageableDefault(sort = "id,desc") Pageable pageable
     ) {
         // 어떤 타입과 keyword로 검색이 되는지 로깅
         log.info("[SEARCH MOVIE LIST] : type:{}, keyword:{}", movieSearchRequestDTO.getType(), movieSearchRequestDTO.getKeyword());
-        return ResponseEntity.ok(movieService.findAllMovies(movieSearchRequestDTO, pageable));
+        return ResponseEntity.ok(movieService.findAll(movieSearchRequestDTO, pageable));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<MovieDTO> findMovie (
+    public ResponseEntity<MovieDTO> findOne (
             @PathVariable long id
     ) {
-        return ResponseEntity.ok(movieService.findMovie(id));
+        return ResponseEntity.ok(movieService.findOne(id));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateMovie (
+    public ResponseEntity<Void> update (
             @PathVariable("id") Long id,
             @RequestBody MovieDTO movieDTO
     ) {
         log.info("[UPDATE MOVIE] : movieId={}, updateMovieInfo={}", id, movieDTO);
-        movieService.updateMovie(id, movieDTO);
+        movieService.update(id, movieDTO);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMovie (
+    public ResponseEntity<Void> delete (
             @PathVariable("id") Long id
     ) {
-        movieService.deleteMovie(id);
+        movieService.delete(id);
         return ResponseEntity.ok().build();
     }
 }

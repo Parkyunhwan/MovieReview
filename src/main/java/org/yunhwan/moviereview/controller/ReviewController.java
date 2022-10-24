@@ -11,46 +11,48 @@ import org.yunhwan.moviereview.service.ReviewService;
 import java.util.List;
 
 @Controller
-@RequestMapping("/reviews")
+@RequestMapping("/movies")
 @RequiredArgsConstructor
 @Log4j2
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping("/{mno}")
-    public ResponseEntity<List<ReviewDTO>> findAllReviews (
-            @PathVariable("mno") Long mno
+    @GetMapping("/{movieId}/reviews")
+    public ResponseEntity<List<ReviewDTO>> findAll (
+            @PathVariable("movieId") Long movieId
     ) {
-        log.info("getReviewList Controller ---------------------------- MNO : " + mno);
-        return ResponseEntity.ok(reviewService.findAllReviews(mno));
+        log.info("[FIND ALL REVIEWS] movieId={}", movieId);
+        return ResponseEntity.ok(reviewService.findAll(movieId));
     }
 
-    @PostMapping("/{mno}")
-    public ResponseEntity<Long> createReview (
+    @PostMapping("/{movieId}/reviews")
+    public ResponseEntity<Long> create (
+            @PathVariable("movieId") Long movieId,
             @RequestBody ReviewDTO reviewDTO
     ) {
-        log.info("addReview Controller -------- ReviewDTO: " + reviewDTO);
-        reviewService.createReview(reviewDTO);
+        log.info("[CREATE REVIEW] movieId={}, reviewDTO={}", movieId, reviewDTO);
+        reviewService.create(movieId, reviewDTO);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{mno}/{reviewnum}")
-    public ResponseEntity<Void> updateReview (
+    @PatchMapping("/{movieId}/reviews/{reviewnum}")
+    public ResponseEntity<Void> update (
+            @PathVariable("movieId") Long movieId,
             @PathVariable Long reviewnum,
             @RequestBody ReviewDTO reviewDTO
     ) {
-        log.info("ModifyReview Controller -------- ReviewDTO: " + reviewDTO);
-        reviewService.updateReview(reviewDTO);
+        log.info("[UPDATE REVIEW] movieId={}, reviewDTO={}", movieId, reviewDTO);
+        reviewService.update(movieId, reviewDTO);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{mno}/{reviewnum}")
-    public ResponseEntity<Void> deleteReview (
+    @DeleteMapping("/{movieId}/{reviewnum}")
+    public ResponseEntity<Void> delete (
             @PathVariable Long reviewnum
     ) {
         log.info("------------delete review ---- ReviewNum : " + reviewnum);
-        reviewService.deleteReview(reviewnum);
+        reviewService.delete(reviewnum);
         return ResponseEntity.ok().build();
     }
 }

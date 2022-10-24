@@ -31,7 +31,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Transactional
     @Override
-    public void deleteMovie(Long id) {
+    public void delete(Long id) {
         // review, movie image 부터 삭제..
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 영화는 존재하지 않습니다."));
@@ -81,12 +81,12 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Page<MovieSearchResponseDTO> findAllMovies(MovieSearchRequestDTO requestDTO, Pageable pageable) {
+    public Page<MovieSearchResponseDTO> findAll(MovieSearchRequestDTO requestDTO, Pageable pageable) {
         return movieRepository.searchPage(requestDTO.getType(), requestDTO.getKeyword(), pageable);
     }
 
     @Override
-    public MovieDTO findMovie(Long mno) {
+    public MovieDTO findOne(Long mno) {
         List<Object[]> movieWithAll = movieRepository.getMovieWithAll(mno);
 
         Movie movie = (Movie) movieWithAll.get(0)[0]; // 어차피 다 똑같은 Movie row
@@ -106,7 +106,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Transactional
     @Override
-    public void updateMovie(Long mno, MovieDTO movieDTO) {
+    public void update(Long mno, MovieDTO movieDTO) {
         Movie movie = movieRepository.findById(mno)
                 .orElseThrow(() -> new IllegalArgumentException("해당 영화는 존재하지 않습니다."));
 

@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Data
 public class ReviewDTO {
 
-    private Long reviewnum;
+    private Long id;
 
     private Long movieId; // Moive
 
