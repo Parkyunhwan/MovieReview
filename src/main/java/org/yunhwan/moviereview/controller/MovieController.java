@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
 import org.yunhwan.moviereview.service.MovieService;
 
 @RestController
-@RequestMapping("movie")
+@RequestMapping("movies")
 @RequiredArgsConstructor
 @Log4j2
 public class MovieController {
@@ -30,17 +31,17 @@ public class MovieController {
     public ResponseEntity<Long> createMovie (
             @RequestBody MovieDTO movieDTO
     ) {
-        log.info("movieDTO: " + movieDTO);
+        log.info("[CREATE MOVIE] 영화 등록 요청 : movieDTO={}",movieDTO);
         return ResponseEntity.ok(movieService.createMovie(movieDTO));
     }
 
     @GetMapping
     public ResponseEntity<Page<MovieSearchResponseDTO>> findAllMovies (
             MovieSearchRequestDTO movieSearchRequestDTO,
-            Pageable pageable
+            @PageableDefault(sort = "id,desc") Pageable pageable
     ) {
         // 어떤 타입과 keyword로 검색이 되는지 로깅
-        log.info("MovieList Read Event : type:{}, keyword:{}", movieSearchRequestDTO.getType(), movieSearchRequestDTO.getKeyword());
+        log.info("[SEARCH MOVIE LIST] : type:{}, keyword:{}", movieSearchRequestDTO.getType(), movieSearchRequestDTO.getKeyword());
         return ResponseEntity.ok(movieService.findAllMovies(movieSearchRequestDTO, pageable));
     }
 
@@ -48,7 +49,6 @@ public class MovieController {
     public ResponseEntity<MovieDTO> findMovie (
             @PathVariable long id
     ) {
-        log.info("Movie Read Event : movieNo:{}", id);
         return ResponseEntity.ok(movieService.findMovie(id));
     }
 
@@ -57,7 +57,7 @@ public class MovieController {
             @PathVariable("id") Long id,
             @RequestBody MovieDTO movieDTO
     ) {
-        log.info("Movie Update Event: movieId : {}", id);
+        log.info("[UPDATE MOVIE] : movieId={}, updateMovieInfo={}", id, movieDTO);
         movieService.updateMovie(id, movieDTO);
         return ResponseEntity.ok().build();
     }
@@ -66,7 +66,6 @@ public class MovieController {
     public ResponseEntity<Void> deleteMovie (
             @PathVariable("id") Long id
     ) {
-        log.info("Movie Delete Event: movieId : {}", id);
         movieService.deleteMovie(id);
         return ResponseEntity.ok().build();
     }

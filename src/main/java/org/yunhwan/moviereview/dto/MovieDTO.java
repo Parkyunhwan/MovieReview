@@ -25,7 +25,7 @@ public class MovieDTO {
 
     // 빌더에서 따로 설정하지 않으면 null or 0이 나오게 함.
     @Builder.Default
-    private List<MovieImageDTO> imageDTOList = new ArrayList<>();
+    private List<MovieImageDTO> imageDTOS = new ArrayList<>();
 
     // 영화의 평균 평점
     private double avg;

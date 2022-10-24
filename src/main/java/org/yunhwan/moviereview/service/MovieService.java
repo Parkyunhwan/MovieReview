@@ -57,7 +57,7 @@ public interface MovieService {
                             .imgName(movieImage.getImgName())
                             .build();
                 }).collect(Collectors.toList());
-                movieDTO.setImageDTOList(movieImageDTOList);
+                movieDTO.setImageDTOS(movieImageDTOList);
             }
         }
         // 화면 출력을 위해 DTO에 데이터를 넣어줌
@@ -87,7 +87,7 @@ public interface MovieService {
 
         entityMap.put("movie", movie);
 
-        List<MovieImageDTO> imageDTOList = movieDTO.getImageDTOList();
+        List<MovieImageDTO> imageDTOList = movieDTO.getImageDTOS();
 
         if (imageDTOList != null && imageDTOList.size() > 0) {
 
