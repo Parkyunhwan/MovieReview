@@ -40,19 +40,21 @@ public class ReviewServiceImpl implements ReviewService{
     @Transactional
     public void update(Long movieId, ReviewDTO reviewDTO) {
         List<Review> existReviews = reviewRepository.findByMovie(Movie.builder().id(movieId).build());
-        existReviews.stream()
-                .filter(review -> review.isSameId(reviewDTO.getId()))
+        Review review = existReviews.stream()
+                .filter(existReview -> existReview.isSameId(reviewDTO.getId()))
                 .findAny()
-                .ifPresent((review) -> {
-                    Review selectedReview = reviewRepository.findById(review.getId())
-                            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰번호입니다."));
-                    selectedReview.changeGrade(reviewDTO.getGrade());
-                    selectedReview.changeText(reviewDTO.getText());
-                });
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰번호입니다."));
+        review.changeGrade(reviewDTO.getGrade());
+        review.changeText(reviewDTO.getText());
     }
 
     @Override
-    public void delete(Long reviewNum) {
-        reviewRepository.deleteById(reviewNum);
+    public void delete(Long movieId, Long id) {
+        List<Review> existReviews = reviewRepository.findByMovie(Movie.builder().id(movieId).build());
+        Review review = existReviews.stream()
+                .filter(existReview -> existReview.isSameId(id))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당 영화에 해당 리뷰가 존재하지 않습니다."));
+        reviewRepository.delete(review);
     }
 }

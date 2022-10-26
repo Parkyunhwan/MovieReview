@@ -19,7 +19,7 @@ public interface ReviewService {
     void update(Long movieId, ReviewDTO reviewDTO);
 
     //D
-    void delete(Long reviewNum);
+    void delete(Long movieId, Long reviewNum);
 
     default Review dtoToEntity(long movieId, ReviewDTO reviewDTO) {
         return Review.builder()

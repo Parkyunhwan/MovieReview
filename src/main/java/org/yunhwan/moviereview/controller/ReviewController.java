@@ -47,12 +47,13 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{movieId}/{reviewnum}")
+    @DeleteMapping("/{movieId}/reviews/{id}")
     public ResponseEntity<Void> delete (
-            @PathVariable Long reviewnum
+            @PathVariable Long movieId,
+            @PathVariable Long id
     ) {
-        log.info("------------delete review ---- ReviewNum : " + reviewnum);
-        reviewService.delete(reviewnum);
+        log.info("[DELETE REVIEW] movieId={}, reviewId={}", movieId, id);
+        reviewService.delete(movieId, id);
         return ResponseEntity.ok().build();
     }
 }
