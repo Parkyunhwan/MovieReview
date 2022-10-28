@@ -1,9 +1,6 @@
 package org.yunhwan.moviereview.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -11,12 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.yunhwan.moviereview.dto.MovieDTO;
-import org.yunhwan.moviereview.dto.MovieSearchRequestDTO;
-import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
+import org.yunhwan.moviereview.dto.*;
 import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.entity.MovieImage;
 import org.yunhwan.moviereview.repository.MovieImageRepositroy;
+import org.yunhwan.moviereview.repository.MovieQueryRepository;
 import org.yunhwan.moviereview.repository.MovieRepository;
 import org.yunhwan.moviereview.repository.ReviewRepository;
 
@@ -28,6 +24,7 @@ public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
     private final MovieImageRepositroy movieImageRepositroy;
     private final ReviewRepository reviewRepository;
+    private final MovieQueryRepository movieQueryRepository;
 
     @Transactional
     @Override
@@ -86,22 +83,12 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public MovieDTO findOne(Long mno) {
-        List<Object[]> movieWithAll = movieRepository.getMovieWithAll(mno);
-
-        Movie movie = (Movie) movieWithAll.get(0)[0]; // 어차피 다 똑같은 Movie row
-
-        List<MovieImage> movieImageList = new ArrayList<>();
-
-        movieWithAll.forEach(arr -> {
-            MovieImage movieImage = (MovieImage) arr[1];
-            movieImageList.add(movieImage);
-        });
-
-        Double avg = (Double) movieWithAll.get(0)[2];
-        Long reviewCnt = (Long) movieWithAll.get(0)[3]; // 모든 Row가 같으므로 0번째 ROw에서 뽑으면 됨.
-
-        return entitiesToDTO(movie, movieImageList, avg, reviewCnt); // 여러 엔티티
+    public MovieResponseDTO findOne(Long id) {
+        MovieResponseDTO movieResponseDTO = movieQueryRepository.findMovieWithReviewAvgCnt(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 영화가 존재하지 않습니다."));
+        List<MovieImageDTO> movieImageDTOS = movieImageRepositroy.findAllMovieImageByMovieId(id);
+        movieResponseDTO.setImageDTOS(movieImageDTOS);
+        return movieResponseDTO; // 여러 엔티티
     }
 
     @Transactional
