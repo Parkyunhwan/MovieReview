@@ -32,7 +32,7 @@ public class MovieController {
     @GetMapping
     public ResponseEntity<Page<MovieSearchResponseDTO>> findAll (
             MovieSearchRequestDTO movieSearchRequestDTO,
-            @PageableDefault(sort = "id,desc") Pageable pageable
+            @PageableDefault Pageable pageable
     ) {
         // 어떤 타입과 keyword로 검색이 되는지 로깅
         log.info("[SEARCH MOVIE LIST] : type:{}, keyword:{}", movieSearchRequestDTO.getType(), movieSearchRequestDTO.getKeyword());
