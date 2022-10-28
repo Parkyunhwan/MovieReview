@@ -16,7 +16,7 @@ public interface ReviewService {
     List<ReviewDTO> findAll(Long mno);
 
     //U
-    void update(Long movieId, ReviewDTO reviewDTO);
+    void update(Long movieId, Long reviewnum, ReviewDTO reviewDTO);
 
     //D
     void delete(Long movieId, Long reviewNum);

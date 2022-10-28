@@ -38,10 +38,10 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     @Transactional
-    public void update(Long movieId, ReviewDTO reviewDTO) {
+    public void update(Long movieId, Long reviewNum, ReviewDTO reviewDTO) {
         List<Review> existReviews = reviewRepository.findByMovie(Movie.builder().id(movieId).build());
         Review review = existReviews.stream()
-                .filter(existReview -> existReview.isSameId(reviewDTO.getId()))
+                .filter(existReview -> existReview.isSameId(reviewNum))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰번호입니다."));
         review.changeGrade(reviewDTO.getGrade());

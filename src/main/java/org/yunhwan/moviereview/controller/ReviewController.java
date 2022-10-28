@@ -36,14 +36,14 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{movieId}/reviews/{reviewnum}")
+    @PatchMapping("/{movieId}/reviews/{reviewNum}")
     public ResponseEntity<Void> update (
             @PathVariable("movieId") Long movieId,
-            @PathVariable Long reviewnum,
+            @PathVariable Long reviewNum,
             @RequestBody ReviewDTO reviewDTO
     ) {
         log.info("[UPDATE REVIEW] movieId={}, reviewDTO={}", movieId, reviewDTO);
-        reviewService.update(movieId, reviewDTO);
+        reviewService.update(movieId, reviewNum, reviewDTO);
         return ResponseEntity.ok().build();
     }
 
