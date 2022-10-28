@@ -1,17 +1,16 @@
 package org.yunhwan.moviereview.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.yunhwan.moviereview.entity.Movie;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.yunhwan.moviereview.entity.Movie;
 
 @Data
 @Builder
@@ -30,7 +29,7 @@ public class MovieDTO {
     // 영화의 평균 평점
     private double avg;
 
-    private int reviewCnt;
+    private long reviewCnt;
 
     private LocalDateTime regDate;
 

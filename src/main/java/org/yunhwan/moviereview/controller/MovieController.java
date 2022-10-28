@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.yunhwan.moviereview.dto.MovieDTO;
+import org.yunhwan.moviereview.dto.MovieResponseDTO;
 import org.yunhwan.moviereview.dto.MovieSearchRequestDTO;
 import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
 import org.yunhwan.moviereview.service.MovieService;
@@ -46,7 +47,7 @@ public class MovieController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<MovieDTO> findOne (
+    public ResponseEntity<MovieResponseDTO> findOne (
             @PathVariable long id
     ) {
         return ResponseEntity.ok(movieService.findOne(id));

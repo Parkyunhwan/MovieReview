@@ -10,13 +10,13 @@ import org.yunhwan.moviereview.entity.MovieImage;
 @Setter
 public class MovieSearchResponseDTO {
 
-    private MovieDTO movieDTO;
+    private MovieResponseDTO movieResponseDTO;
     private MovieImageDTO movieImageDTO;
     private double avg;
     private long cnt;
 
     public MovieSearchResponseDTO(Movie movie, MovieImage movieImage, double avg, long cnt) {
-        this.movieDTO = new MovieDTO(movie);
+        this.movieResponseDTO = new MovieResponseDTO(movie);
         Optional.ofNullable(movieImage)
                 .ifPresent((image) ->
                         this.movieImageDTO = new MovieImageDTO(image.getUuid(), image.getImgName(), image.getPath())

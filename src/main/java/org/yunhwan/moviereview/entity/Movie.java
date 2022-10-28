@@ -2,12 +2,9 @@ package org.yunhwan.moviereview.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -30,6 +27,10 @@ public class Movie extends BaseEntity {
     private Long runningTime;
 
     private String country;
+
+    @OneToMany
+    @JoinColumn(name = "inum", insertable = false, updatable = false)
+    private List<MovieImage> movieImages;
 
     public void changeTitle(String title, LocalDate openDate, Long runningTime, String country, String rating) {
         this.title = title;
