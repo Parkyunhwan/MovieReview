@@ -18,6 +18,7 @@ import org.yunhwan.moviereview.entity.Movie;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static org.yunhwan.moviereview.entity.QMovie.movie;
 import static org.yunhwan.moviereview.entity.QMovieImage.movieImage;
@@ -34,7 +35,7 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public Page<MovieSearchResponseDTO> searchPageBy(String type, String keyword, Pageable pageable) {
+    public Page<MovieSearchResponseDTO> searchPageBy(Long cursorId, String type, String keyword, Pageable pageable) {
         List<MovieSearchResponseDTO> result = queryFactory
                 .select(Projections.constructor(MovieSearchResponseDTO.class,
                         movie, movieImage, review.grade.avg().coalesce(0.0).as("avg"), review.count().as("reviewCnt"))
@@ -44,12 +45,13 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
                 .on(movie.eq(movieImage.movie))
                 .leftJoin(review)
                 .on(movie.eq(review.movie))
-                .where(mnoGreatherThanZero()
-                        .and(isSearchable(type, keyword))
+                .where(
+                        idGt(cursorId),
+                        isSearchable(type, keyword)
                 )
                 .groupBy(movie)
                 .orderBy(getOrderSpecifier(pageable.getSort()))
-                .offset(pageable.getOffset())
+                //.offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
@@ -91,7 +93,9 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
         return conditonBuilder;
     }
 
-    private static BooleanExpression mnoGreatherThanZero() {
-        return movie.id.gt(0L);
+    private static BooleanExpression idGt(Long id) {
+        Long movieId = Optional.ofNullable(id)
+                .orElseThrow(() -> new IllegalArgumentException("비교할 movie Id값이 필요합니다."));
+        return movie.id.gt(movieId);
     }
 }

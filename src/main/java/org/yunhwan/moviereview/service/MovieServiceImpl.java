@@ -82,7 +82,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Page<MovieSearchResponseDTO> findAll(MovieSearchRequestDTO requestDTO, Pageable pageable) {
-        return movieRepository.searchPageBy(requestDTO.getType(), requestDTO.getKeyword(), pageable);
+        return movieRepository.searchPageBy(requestDTO.getCursorId(), requestDTO.getType(), requestDTO.getKeyword(), pageable);
     }
 
     @Override

@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class MovieSearchRequestDTO {
+    private Long cursorId;
     private String type;
     private String keyword;
 }
