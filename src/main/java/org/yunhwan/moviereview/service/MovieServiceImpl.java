@@ -1,7 +1,5 @@
 package org.yunhwan.moviereview.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -15,6 +13,11 @@ import org.yunhwan.moviereview.repository.MovieImageRepositroy;
 import org.yunhwan.moviereview.repository.MovieQueryRepository;
 import org.yunhwan.moviereview.repository.MovieRepository;
 import org.yunhwan.moviereview.repository.ReviewRepository;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -79,7 +82,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Page<MovieSearchResponseDTO> findAll(MovieSearchRequestDTO requestDTO, Pageable pageable) {
-        return movieRepository.searchPage(requestDTO.getType(), requestDTO.getKeyword(), pageable);
+        return movieRepository.searchPageBy(requestDTO.getType(), requestDTO.getKeyword(), pageable);
     }
 
     @Override

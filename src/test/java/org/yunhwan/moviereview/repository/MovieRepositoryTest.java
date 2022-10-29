@@ -7,12 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
 
 import java.util.Arrays;
 import java.util.List;
-import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class MovieRepositoryTest {
@@ -45,18 +43,13 @@ class MovieRepositoryTest {
     }
 
     @Test
-    public void Movie와SearchBoardRepository간연결테스트() throws Exception {
-        movieRepository.Search1();
-    }
-
-    @Test
     public void SearchPage정상작동테스트() throws Exception {
         //given
         //Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending());
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending().and(Sort.by("title").ascending()));
 
-        Page<MovieSearchResponseDTO> trc = movieRepository.searchPage("trc", "1", pageable);
+        Page<MovieSearchResponseDTO> trc = movieRepository.searchPageBy("trc", "1", pageable);
         //when
 
         //then

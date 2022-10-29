@@ -4,11 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.yunhwan.moviereview.dto.MovieResponseDTO;
 import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.repository.search.SearchMovieRepository;
-
-import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie, Long>, SearchMovieRepository {
 

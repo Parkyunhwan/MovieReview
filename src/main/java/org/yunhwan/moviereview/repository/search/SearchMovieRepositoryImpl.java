@@ -1,19 +1,12 @@
 package org.yunhwan.moviereview.repository.search;
 
-import static org.yunhwan.moviereview.entity.QMovie.*;
-import static org.yunhwan.moviereview.entity.QMovieImage.*;
-import static org.yunhwan.moviereview.entity.QReview.*;
-
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,9 +14,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
-import org.yunhwan.moviereview.entity.*;
+import org.yunhwan.moviereview.entity.Movie;
 
+import javax.persistence.EntityManager;
 import java.util.List;
+
+import static org.yunhwan.moviereview.entity.QMovie.movie;
+import static org.yunhwan.moviereview.entity.QMovieImage.movieImage;
+import static org.yunhwan.moviereview.entity.QReview.review;
 
 @Log4j2
 public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport implements SearchMovieRepository {
@@ -36,28 +34,7 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public Movie Search1() {
-        log.info("SEARCH 1");
-
-        QMovie movie = QMovie.movie;
-        QReview review = QReview.review;
-        QMember member = QMember.member;
-
-        JPQLQuery<Movie> jpqlQuery = from(movie);
-        jpqlQuery.leftJoin(review).on(review.movie.eq(movie));
-        jpqlQuery.leftJoin(member).on(review.member.eq(member));
-
-        JPQLQuery<Tuple> tuple = jpqlQuery.select(movie, review.grade.avg(), review.count());
-
-        tuple.groupBy(movie);
-
-        List<Tuple> result = tuple.fetch();
-        log.info("result" + result);
-        return null;
-    }
-
-    @Override
-    public Page<MovieSearchResponseDTO> searchPage(String type, String keyword, Pageable pageable) {
+    public Page<MovieSearchResponseDTO> searchPageBy(String type, String keyword, Pageable pageable) {
         List<MovieSearchResponseDTO> result = queryFactory
                 .select(Projections.constructor(MovieSearchResponseDTO.class,
                         movie, movieImage, review.grade.avg().coalesce(0.0).as("avg"), review.count().as("reviewCnt"))
