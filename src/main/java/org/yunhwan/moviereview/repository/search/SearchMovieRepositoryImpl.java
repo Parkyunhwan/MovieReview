@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
 import org.yunhwan.moviereview.entity.Movie;
+import org.yunhwan.moviereview.util.QueryDslUtil;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -63,12 +64,14 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     private OrderSpecifier[] getOrderSpecifier(Sort sort) {
-        return sort.stream().map(order -> {
-            Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-            String prop = order.getProperty();
-            PathBuilder orderByExpression = new PathBuilder(Movie.class, "movie");
-            return new OrderSpecifier(direction, orderByExpression.get(prop));
-        }).toArray(OrderSpecifier[]::new);
+        return sort.stream()
+                .map(order ->
+                        QueryDslUtil.getOrderSpecifier(direction(order), movie, order.getProperty())
+                ).toArray(OrderSpecifier[]::new);
+    }
+
+    private static Order direction(Sort.Order order) {
+        return order.isAscending() ? Order.ASC : Order.DESC;
     }
 
     private static BooleanBuilder isSearchable(String type, String keyword) {
