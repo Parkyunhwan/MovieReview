@@ -2,7 +2,6 @@ package org.yunhwan.moviereview.controller;
 
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -44,7 +43,10 @@ public class UploadController {
      * @return
      */
     @GetMapping("/display")
-    public ResponseEntity<byte[]> getFile(String fileName, String size) {
+    public ResponseEntity<byte[]> getFile(
+            String fileName,
+            String size
+    ) {
         ResponseEntity<byte[]> result = null;
 
         try {
@@ -85,7 +87,9 @@ public class UploadController {
      * @return ResponseEntity로 "반환 값과 상태 값을 함께 반환합니다."
      */
     @PostMapping("/uploadAjax")
-    public ResponseEntity<List<UploadResultDTO>> uploadFile(MultipartFile[] uploadFiles) {
+    public ResponseEntity<List<UploadResultDTO>> uploadFile(
+            MultipartFile[] uploadFiles
+    ) {
 
         List<UploadResultDTO> resultDTOList = new ArrayList<>();
 
@@ -140,7 +144,9 @@ public class UploadController {
     }
 
     @PostMapping("/removeFile")
-    public ResponseEntity<Boolean> removeFile(String fileName) {
+    public ResponseEntity<Boolean> removeFile(
+            String fileName
+    ) {
         String srcFileName = null;
         try {
             srcFileName = URLDecoder.decode(fileName, "UTF-8");

@@ -2,92 +2,65 @@ package org.yunhwan.moviereview.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.servlet.view.RedirectView;
 import org.yunhwan.moviereview.dto.MovieDTO;
-import org.yunhwan.moviereview.dto.PageRequestDTO;
-import org.yunhwan.moviereview.dto.PageResultDTO;
+import org.yunhwan.moviereview.dto.MovieResponseDTO;
+import org.yunhwan.moviereview.dto.MovieSearchRequestDTO;
+import org.yunhwan.moviereview.dto.MovieSearchResponseDTO;
 import org.yunhwan.moviereview.service.MovieService;
 
-import javax.servlet.http.HttpServletResponse;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-@Controller
-@RequestMapping("movie")
+@RestController
+@RequestMapping("movies")
 @RequiredArgsConstructor
 @Log4j2
 public class MovieController {
 
     private final MovieService movieService;
 
-    @GetMapping("register")
-    public void register() {
-
+    @PostMapping
+    public ResponseEntity<Long> create (
+            @RequestBody MovieDTO movieDTO
+    ) {
+        log.info("[CREATE MOVIE] 영화 등록 요청 : movieDTO={}",movieDTO);
+        return ResponseEntity.ok(movieService.createMovie(movieDTO));
     }
 
-    @PostMapping("")
-    public String register(MovieDTO movieDTO, RedirectAttributes redirectAttributes) {
-        log.info("movieDTO: " + movieDTO); // 넘어온 movieDTO
-
-        Long mno = movieService.register(movieDTO);
-
-        redirectAttributes.addFlashAttribute("msg", mno); // 저장후 생성된 mno를 특성에 넣어서 반환
-
-        return "redirect:movie/list"; // 등록 후 영화 목록 페이지로 리다이렉트
+    @GetMapping
+    public ResponseEntity<Page<MovieSearchResponseDTO>> findAll (
+            MovieSearchRequestDTO movieSearchRequestDTO,
+            @PageableDefault Pageable pageable
+    ) {
+        // 어떤 타입과 keyword로 검색이 되는지 로깅
+        log.info("[SEARCH MOVIE LIST] : type:{}, keyword:{}", movieSearchRequestDTO.getType(), movieSearchRequestDTO.getKeyword());
+        return ResponseEntity.ok(movieService.findAll(movieSearchRequestDTO, pageable));
     }
 
-    @GetMapping("list")
-    public void list(PageRequestDTO pageRequestDTO, Model model) {
-        log.info("pageReqestDTO: " + pageRequestDTO);
-        PageResultDTO<MovieDTO, Object[]> list = movieService.getList(pageRequestDTO);
-        model.addAttribute("result", list);
+    @GetMapping("{id}")
+    public ResponseEntity<MovieResponseDTO> findOne (
+            @PathVariable long id
+    ) {
+        return ResponseEntity.ok(movieService.findOne(id));
     }
 
-    @GetMapping("{mno}")
-    public String readMovie(@PathVariable long mno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
-        log.info("mno: " + mno);
-
-        MovieDTO movieDTO = movieService.getMovie(mno);
-
-        model.addAttribute("dto", movieDTO);
-
-        return "movie/read";
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> update (
+            @PathVariable("id") Long id,
+            @RequestBody MovieDTO movieDTO
+    ) {
+        log.info("[UPDATE MOVIE] : movieId={}, updateMovieInfo={}", id, movieDTO);
+        movieService.update(id, movieDTO);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("{mno}/modify")
-    public String modifyPage(@PathVariable long mno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
-        log.info("mno: " + mno);
-
-        MovieDTO movieDTO = movieService.getMovie(mno);
-
-        model.addAttribute("dto", movieDTO);
-
-        return "movie/modify";
-    }
-
-    @DeleteMapping("/{mno}")
-    public ResponseEntity<String> removeMovie(@PathVariable("mno") Long mno) {
-        log.info("delete mno " + mno);
-        movieService.removeWithReplies(mno);
-
-        return new ResponseEntity<>("Delete Success", HttpStatus.OK);
-    }
-
-    @PutMapping("/{mno}")
-    @ResponseBody
-    public ResponseEntity<String> modifyMovie(@PathVariable("mno") Long mno, @RequestBody MovieDTO movieDTO) {
-        log.info("modify mno " + mno);
-        movieService.modify(movieDTO);
-
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete (
+            @PathVariable("id") Long id
+    ) {
+        movieService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -2,7 +2,6 @@ package org.yunhwan.moviereview.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -12,48 +11,49 @@ import org.yunhwan.moviereview.service.ReviewService;
 import java.util.List;
 
 @Controller
-@RequestMapping("/reviews")
+@RequestMapping("/movies")
 @RequiredArgsConstructor
 @Log4j2
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping("/{mno}")
-    public ResponseEntity<List<ReviewDTO>> getReviewList(@PathVariable("mno") Long mno) {
-        log.info("getReviewList Controller ---------------------------- MNO : " + mno);
-
-        List<ReviewDTO> listOfMovie = reviewService.getListOfMovie(mno);
-
-        return new ResponseEntity<>(listOfMovie, HttpStatus.OK);
+    @GetMapping("/{movieId}/reviews")
+    public ResponseEntity<List<ReviewDTO>> findAll (
+            @PathVariable("movieId") Long movieId
+    ) {
+        log.info("[FIND ALL REVIEWS] movieId={}", movieId);
+        return ResponseEntity.ok(reviewService.findAll(movieId));
     }
 
-    @PostMapping("/{mno}")
-    public ResponseEntity<Long> addReview(@RequestBody ReviewDTO reviewDTO) {
-        log.info("addReview Controller -------- ReviewDTO: " + reviewDTO);
-
-        Long regNum = reviewService.register(reviewDTO);
-
-        // PRG패턴을 컨트롤러 단에서 만들려 했으나 ajax 요청 시 응답 처리해줘야하므로 응답 처리에서 redirect처리 해줘야 함
-        //return "redirect:/movie/" + reviewDTO.getMno();
-        return new ResponseEntity<>(regNum, HttpStatus.OK);
+    @PostMapping("/{movieId}/reviews")
+    public ResponseEntity<Long> create (
+            @PathVariable("movieId") Long movieId,
+            @RequestBody ReviewDTO reviewDTO
+    ) {
+        log.info("[CREATE REVIEW] movieId={}, reviewDTO={}", movieId, reviewDTO);
+        reviewService.create(movieId, reviewDTO);
+        return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{mno}/{reviewnum}")
-    public ResponseEntity<Long> modifyReview(@PathVariable Long reviewnum, @RequestBody ReviewDTO reviewDTO) {
-        log.info("ModifyReview Controller -------- ReviewDTO: " + reviewDTO);
-
-        reviewService.modify(reviewDTO);
-
-        return new ResponseEntity<>(reviewnum, HttpStatus.OK);
+    @PatchMapping("/{movieId}/reviews/{reviewNum}")
+    public ResponseEntity<Void> update (
+            @PathVariable("movieId") Long movieId,
+            @PathVariable Long reviewNum,
+            @RequestBody ReviewDTO reviewDTO
+    ) {
+        log.info("[UPDATE REVIEW] movieId={}, reviewDTO={}", movieId, reviewDTO);
+        reviewService.update(movieId, reviewNum, reviewDTO);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{mno}/{reviewnum}")
-    public ResponseEntity<Long> removeReview(@PathVariable Long reviewnum) {
-        log.info("------------delete review ---- ReviewNum : " + reviewnum);
-
-        reviewService.remove(reviewnum);
-
-        return new ResponseEntity<>(reviewnum, HttpStatus.OK);
+    @DeleteMapping("/{movieId}/reviews/{id}")
+    public ResponseEntity<Void> delete (
+            @PathVariable Long movieId,
+            @PathVariable Long id
+    ) {
+        log.info("[DELETE REVIEW] movieId={}, reviewId={}", movieId, id);
+        reviewService.delete(movieId, id);
+        return ResponseEntity.ok().build();
     }
 }

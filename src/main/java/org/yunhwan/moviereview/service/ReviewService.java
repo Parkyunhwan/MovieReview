@@ -10,35 +10,33 @@ import java.util.List;
 
 public interface ReviewService {
     //C
-    Long register(ReviewDTO reviewDTO);
+    Long create(Long movieId, ReviewDTO reviewDTO);
 
     //R
-    List<ReviewDTO> getListOfMovie(Long mno);
+    List<ReviewDTO> findAll(Long mno);
 
     //U
-    void modify(ReviewDTO reviewDTO);
+    void update(Long movieId, Long reviewnum, ReviewDTO reviewDTO);
 
     //D
-    void remove(Long reviewNum);
+    void delete(Long movieId, Long reviewNum);
 
-    default Review dtoToEntity(ReviewDTO reviewDTO) {
-        Review review = Review.builder()
-                .reviewnum(reviewDTO.getReviewnum())
+    default Review dtoToEntity(long movieId, ReviewDTO reviewDTO) {
+        return Review.builder()
+                .id(reviewDTO.getId())
                 .text(reviewDTO.getText())
                 .grade(reviewDTO.getGrade())
                 .member(Member.builder().mid(reviewDTO.getMid()).build())
-                .movie(Movie.builder().mno(reviewDTO.getMno()).build())
+                .movie(Movie.builder().id(movieId).build())
                 .grade(reviewDTO.getGrade())
                 .text(reviewDTO.getText())
                 .build();
-
-        return review;
     }
 
     default ReviewDTO entityToDto(Review movieReview){
         ReviewDTO movieReviewDTO = ReviewDTO.builder()
-                .reviewnum(movieReview.getReviewnum())
-                .mno(movieReview.getMovie().getMno())
+                .id(movieReview.getId())
+                .movieId(movieReview.getMovie().getId())
                 .mid(movieReview.getMember().getMid())
                 .nickname(movieReview.getMember().getNickname())
                 .email(movieReview.getMember().getEmail())

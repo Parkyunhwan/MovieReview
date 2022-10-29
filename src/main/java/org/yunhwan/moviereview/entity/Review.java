@@ -16,7 +16,7 @@ public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reviewnum;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Movie movie;
@@ -34,5 +34,9 @@ public class Review extends BaseEntity {
 
     public void changeText(String text) {
         this.text = text;
+    }
+
+    public boolean isSameId(long reviewId) {
+        return id.equals(reviewId);
     }
 }

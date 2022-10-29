@@ -6,8 +6,6 @@ import lombok.Data;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-// 업로드 결과 처리 dto
-@Data
 @AllArgsConstructor
 public class UploadResultDTO {
 
