@@ -5,7 +5,6 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -48,7 +47,7 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
                 .on(movie.eq(review.movie))
                 .where(
                         idGt(cursorId),
-                        isSearchable(type, keyword)
+                        searchCondition(type, keyword)
                 )
                 .groupBy(movie)
                 .orderBy(getOrderSpecifier(pageable.getSort()))
@@ -74,25 +73,13 @@ public class SearchMovieRepositoryImpl extends QuerydslRepositorySupport impleme
         return order.isAscending() ? Order.ASC : Order.DESC;
     }
 
-    private static BooleanBuilder isSearchable(String type, String keyword) {
+    private static BooleanBuilder searchCondition(String type, String keyword) {
         BooleanBuilder conditonBuilder = new BooleanBuilder();
-        if (type != null) {
-            String[] typeArr = type.split("");
-            for (String t : typeArr) {
-                switch (t) {
-                    case "t":
-                        conditonBuilder.or(movie.title.contains(keyword));
-                        break;
-                    case "r":
-                        conditonBuilder.or(movie.rating.contains(keyword));
-                        break;
-                    case "c":
-                        conditonBuilder.or(movie.country.contains(keyword));
-                        break;
-                }
-            }
-            return conditonBuilder;
-        }
+        List<String> types = SearchMovieCondition.splitTypes(type);
+        types.stream()
+                .map(SearchMovieCondition::getType)
+                .map(searchMovieCondition -> searchMovieCondition.checkCondition(keyword))
+                .forEach(conditonBuilder::or);
         return conditonBuilder;
     }
 
