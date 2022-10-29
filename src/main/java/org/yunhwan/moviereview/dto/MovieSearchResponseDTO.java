@@ -1,13 +1,14 @@
 package org.yunhwan.moviereview.dto;
 
 import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.yunhwan.moviereview.entity.Movie;
 import org.yunhwan.moviereview.entity.MovieImage;
 
 @Getter
-@Setter
 public class MovieSearchResponseDTO {
 
     private MovieResponseDTO movieResponseDTO;

@@ -1,9 +1,6 @@
 package org.yunhwan.moviereview.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -11,10 +8,10 @@ import java.net.URLEncoder;
 /**
  * UploadImageDTO와 동일한 코드 사용. 변수명만 교체
  */
-@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Getter
 public class MovieImageDTO {
     private String uuid;
     private String imgName;

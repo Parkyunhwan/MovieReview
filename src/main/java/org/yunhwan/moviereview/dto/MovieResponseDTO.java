@@ -4,17 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.yunhwan.moviereview.entity.Movie;
 
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class MovieResponseDTO {
 
     private Long id;
@@ -65,5 +63,9 @@ public class MovieResponseDTO {
         this.country = movie.getCountry();
         this.avg = avg;
         this.reviewCnt = reviewCnt;
+    }
+
+    public void setImageDTOS(List<MovieImageDTO> imageDTOS) {
+        this.imageDTOS = imageDTOS;
     }
 }
